@@ -19,7 +19,9 @@ Dependencies
 Installation
 ------------
 * Install Python 2.7.6
-* Install pywinusb 
+* Install pycrypto
+* Extract pywinusb-0.4.2
+* Copy pywinusb/ folder to Python27\Lib\site-packages\
 
 Usage
 -----
