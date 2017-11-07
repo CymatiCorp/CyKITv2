@@ -33,9 +33,10 @@ example 3.
 python.exe CyKITv2.py 127.0.0.1 12991 6 info+confirm
 
 
-Open a browser. (Firefox/Chrome)
-
-Enter port used to listen on, and press "Connect"
+* Open a browser. (Firefox/Chrome)
+* Open Web Document in project: /Web/CyKITv2.html
+* Enter localhost port used to listen on. 
+* Press "Connect"
 
 Features
 --------
