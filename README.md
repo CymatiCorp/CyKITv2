@@ -8,6 +8,8 @@ Description
 Streams EEG data to a browser for data handling.
 Works with Chrome and Firefox.
 
+<img src="http://cymaticorp.com/edu/CyKITv2-/CyKITv2-example.png" width=70% height=70% ><br>
+
 Dependencies
 ------------
 * pywinusb 0.4.2 --- https://pypi.python.org/pypi/pywinusb/  <br>
@@ -34,6 +36,16 @@ python.exe CyKITv2.py 127.0.0.1 12991 6 info+confirm
 Open a browser. (Firefox/Chrome)
 
 Enter port used to listen on, and press "Connect"
+
+Features
+--------
+
+* Uses Python threading.
+* Able to connect localy to localhost. (no need for http servers)
+* Scrolling
+* Able to make use of EEG data via javascript.
+* EEG graphing.
+* Masking (Advanced feature lets you manipulate data functions in real-time)
 
 Beta
 ----
