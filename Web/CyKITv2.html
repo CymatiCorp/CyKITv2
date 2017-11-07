@@ -1,0 +1,164 @@
+<!-- 
+    CyKITv2 2017.11
+    =================  
+    Written by Warren
+    
+    HTML Main Access.
+
+-->
+<html>
+    <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>CyKITv2 (EEG handler for Python)</title>
+    <link rel="stylesheet" href="./w3.css"> 
+    <link rel="stylesheet" href="./cyCSS.css"> 
+    <script src="CySocketClient.js"></script>
+    </head>
+    <img src="./images/graph.png" id="graphImage" width="25px" height="50px" style="position:absolute; visibility:hidden; background-size: 25px 50px; " />
+    <body style="background:black;" >   
+        <div id = "connectBar" style="position:absolute; background-color:#777777; width:100%; height:100px; background-image:url('./images/blue-bg.png'); background-size:100% 100%;  background-repeat: no-repeat;" > 
+            <div id="innerBar" style="margin-left:21%; margin-top:1%; color:white; background: rgba(0,0,0,0.3); min-width:300px;  max-width:400px; border-radius: 10px; width:30%; ">
+              <div style="position:relative; left:15px; top:8px;">
+                Host <input id="cyHost" type="text" value="127.0.0.1" /> 
+                Port <input id="cyPort" type="text" maxlength="5" size="5" value="15525" /> 
+                <div style="margin-top:12px; left:4%;">
+                 <input id="cyConnect" class="w3-bar-item w3-black  w3-hover-blue" type="button" value="Connect" />
+                 <input id="cyDisconnect" class="w3-bar-item w3-black w3-hover-red" type="button" value="Disconnect" />
+                 <input id="cySettings" style="visibility:hidden;" type="button" value="Settings" /><br><br> 
+                </div>
+               </div>                               
+            </div>
+        </div>
+        
+        
+        
+        <div id="CyKIT-picture" style="position:absolute; left:2%; top:2%; width:20%; height:100%; background-image:url('./images/CyKITv2-bg-off.png'); background-size:200px 70px;  background-repeat: no-repeat;"> 
+        
+        </div>
+        <div id="leftPanel" style="position:absolute; background-color:black; top:109px; width:20%; height:100%; color:white; font-family: segoe ui;">
+            <div style ="position:absolute; width:100%; height:100%; background-image:url('./images/gloss.png'); background-size:100% 100%;  background-repeat: no-repeat;">
+                <div id="innerLeftPanel" style="position:relative; left: 3%; height:25%; opacity:.7; width: 70%; max-height:150px;" ;>
+                    Status: <label id="CyStatus" style="color:#aaaaaa;">Not Connected.</label> <br><br>
+                    Controller: <label id="CyHeadset" style="color:#aaaaaa;">None.</label> <br><br>
+                    View Type: &nbsp <select id="CyView" onchange="viewChange(this)">
+                        <option id="Data">EEG</option>
+                        <option id="Gyro">Gyro</option>
+                    </select> <br><br>
+                    <input id="CyScroll" type="checkbox"> &nbsp Scroll</input><br><br>
+                    <input id="manualControl" type="checkbox"> &nbsp Manual Control</input> <br><br>
+                    <input id="setMask" type="checkbox"> &nbsp Masking (Advanced)</input>
+                    <div id="cyManual" style="visibility:hidden;">
+                    <br>View Sensor: <select id="CySelect"></select> <br><br>
+                    </div>
+                    
+                    <!---
+                    Model: <select id="CyModel" onchange="modelChange(this)">
+                        <option id="1">Epoc</option>
+                        <option id="2">Epoc Research</option>
+                        <option id="3">?</option>
+                        <option id="4">?</option>
+                        <option id="5">?</option>
+                        <option id="6">Epoc+ / Insight</option>
+                    </select> 
+                    <input id="cySetModel" type="button" value=" Set " /><br><br> 
+                    
+                    --->
+                    
+                    <br><br>
+
+                    <div style="position:absolute; left:1%; width:110%; height:125%; opacity:.9; background-color:#555555; border-radius: 10px; color:#ababab; font-size:12;">
+                        <div style="margin-left:10px; margin-top:10px;">
+                            USB Name: <label style="color:#aaaaaa;" id="CyDevice">0</label> <br><br>
+                            USB Serial: <label style="color:#aaaaaa;" id="CySerial">0</label> <br><br>
+                            Key Model #: <label style="color:#aaaaaa;" id="CyKeyModel">0</label> <br><br>
+                            
+                            Battery Level: <label style="color:#aaaaaa;" id="CyBattery">0</label> <br><br>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w3-bar w3-black" style="position:absolute; left:21%; top:110px;">
+            <button class="w3-bar-item w3-button w3-hover-blue" onclick="openTab('EEG')">EEG</button>
+            <button class="w3-bar-item w3-button w3-hover-blue" onclick="openTab('Gyro')">Gyro</button>
+            <button class="w3-bar-item w3-button w3-hover-blue" onclick="openTab('Game')">Game</button>
+        </div>
+        <div id="EEG" class="tabs">
+            <div id="canvasPane" style="position:relative; background-image: url('./images/graph.png'); background-size: 25px 50px; left:20%; top:150px; height:60%;  width:78%; border-radius:5px; border: 2px solid #aaa; ">
+
+                <canvas id="cyCanvas" style="position:relative; height:100%;"></canvas>
+                <div id="manualSelection" style="visibility:visible; overflow:hidden;">
+                    <div id="select.Epoc" style="position:relative; left:0%; top:10px; width:80%; height: 20%; color:white; visibility: hidden;">
+                        <form action="">
+                            <input id="e.AF3" type="checkbox" checked>AF3</input> &nbsp
+                            <input id="e.F7" type="checkbox" checked>F7</input> &nbsp
+                            <input id="e.F3" type="checkbox" checked>F3</input> &nbsp &nbsp
+                            <input id="e.FC5" type="checkbox" checked>FC5</input> &nbsp &nbsp
+                            <input id="e.T7" type="checkbox" checked>T7</input> &nbsp &nbsp
+                            <input id="e.P7" type="checkbox" checked>P7</input> &nbsp &nbsp
+                            <input id="e.O1" type="checkbox" checked>O1</input> <br><br>
+                            <input id="e.O2" type="checkbox" checked>O2</input> &nbsp &nbsp
+                            <input id="e.P8" type="checkbox" checked>P8</input> &nbsp
+                            <input id="e.T8" type="checkbox" checked>T8</input> &nbsp &nbsp
+                            <input id="e.FC6" type="checkbox" checked>FC6</input> &nbsp &nbsp
+                            <input id="e.F4" type="checkbox" checked>F4</input> &nbsp &nbsp
+                            <input id="e.F8" type="checkbox" checked>F8</input> &nbsp &nbsp
+                            <input id="e.AF4" type="checkbox" checked>AF4</input> &nbsp &nbsp
+                        </form>
+                    </div>
+                    <div id="select.Insight" style="position:relative; left:0%; top:-67px; width:80%; height: 20%; color:white; visibility: hidden;">
+                        <form action="">
+                            <input id="i.AF3" type="checkbox">AF3</input> &nbsp
+                            <input id="i.T7" type="checkbox">T7</input> &nbsp &nbsp
+                            <input id="i.Pz" type="checkbox">Pz</input> &nbsp &nbsp
+                            <input id="i.T8" type="checkbox">T8</input> &nbsp &nbsp
+                            <input id="i.AF4" type="checkbox">AF4</input> &nbsp &nbsp
+                        </form>
+                    </div>
+                </div>
+            </div>
+         <div id="maskView" style="position:absolute; left:50%; top:10px; z-index:1; visibility:hidden;">
+         <font color="White">Mask</font> <select id="CyMask" style="visibility: hidden;">
+                        <option id="0">0</option>
+                        <option id="1">1</option>
+                        <option id="2">2</option>
+                        <option id="3">3</option>
+                        <option id="4">4</option>
+                        <option id="5">5</option>
+                        <option id="6">6</option>
+                        <option id="7">7</option>
+                        <option id="8">8</option>
+                        <option id="9">9</option>
+                        <option id="10">10</option>
+                        <option id="11">11</option>
+                        <option id="12">12</option>
+                        <option id="13">13</option>
+                        
+                    </select> 
+                <input id="newMask" type="text" maxlength="60" size="60" style="visibility:hidden;" value="10.11.12.13.14.15.0.1.2.3.4.5.6.7"/>
+                <input id="maskChange" type="button" value="Change Mask" style="visibility:hidden;" /><br><br> 
+                </div>
+        </div>
+        
+        
+           
+                
+        <div id="Settings" class="tabs" style="display:none;">
+            
+        </div>
+        <div id="Gyro" class="tabs" style="display:none;">
+            <div id="gyroPane" style="position:relative; background-color:#ffffff; left:20%; top:150px; height:60%;  width:78%; border-radius:5px; border: 2px solid #aaa; ">
+                <canvas id="gyroCanvas" style="position:relative; height:100%;"></canvas>
+            </div>
+        </div>
+        <div id="Game" class="tabs" style="display:none;">
+            <div id="gamePane" style="position:relative; background-color:#ffffff; left:20%; top:150px; height:60%;  width:78%; border-radius:5px; border: 2px solid #aaa; ">
+            </div>
+        </div>
+                
+        
+    <script src="CyInterface.js"></script>
+    
+    </body>
+</html>
