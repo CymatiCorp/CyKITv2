@@ -35,7 +35,7 @@ python.exe CyKITv2.py 127.0.0.1 12991 6 info+confirm
 
 * Open a browser. (Firefox/Chrome)
 * Open Web Document in project: /Web/CyKITv2.html
-* Enter localhost port used to listen on. 
+* Enter localhost and listen port used to run CyKITv2.py
 * Press "Connect"
 
 Features
