@@ -63,5 +63,5 @@ Only the EEG tab is currently functional.
 The data will not be formatted correctly on all controllers, and some additional
 work needs to be done in this area.
 
-Feel free to offer comments and suggests via Issues,
+* Feel free to offer comments and suggests via Issues, <br>
 or submit new push requests, if you have something to contribute.
