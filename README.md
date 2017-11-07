@@ -48,6 +48,9 @@ Features
 * EEG graphing.
 * Masking (Advanced feature lets you manipulate data functions in real-time)
 
+Note: Does not currently stream to openvibe. <br>
+      Only a browser can access this data.
+
 Beta
 ----
 Currently the automatic rendering for certain EEG controllers does not work,
