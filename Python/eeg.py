@@ -282,7 +282,7 @@ class EEG(object):
                     if self.KeyModel == 2:
                         apacket = str(ord(data[0])) + " "
                         for i in range(0,14):
-                            apacket = apacket + str(self.get_level(data[2:33], self.mask[i])) + " "
+                            apacket = apacket + str(self.get_level(data, self.mask[i])) + " "
                     newdata = ''
                     
                     if self.KeyModel == 4 or self.KeyModel == 6:
