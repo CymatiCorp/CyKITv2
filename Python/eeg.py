@@ -288,7 +288,7 @@ class EEG(object):
                     if self.KeyModel == 4 or self.KeyModel == 6:
                         apacket = str(ord(data[0])) + " " + str(ord(data[1])) + " "
                         
-                        for i in range(0,len(data)):
+                        for i in range(2,len(data)):
                             apacket = apacket + str(ord(data[i])) + " "
                     
                     try:
