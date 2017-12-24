@@ -1,11 +1,11 @@
 # -*- coding: utf8 -*-
 # 
 # pywebsocketserver  2017.12.23
-# ============================
+# ===============================
 # Written  by suxianbaozi
 #
 # CyWebSocket.py     2017.12.23
-# ============================
+# ===============================
 # Modified by Warren
 #
 # Python web server for connecting sockets locally with browsers.
