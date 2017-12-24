@@ -4,7 +4,7 @@ Chat Discussion:
 https://discordapp.com/invite/gTYNWc7 <br>
 (Do not need discord app, just click for browser chat)
 
-<img src="http://cymaticorp.com/edu/CyKITv2-/CyKITv2.png" width=25% height=25% ><br>
+<img src="./git-Images/CyKITv2.png" width=25% height=25% ><br>
 CyKit 2.0 (2017.12) for Python 2.7.6 (Windows)
 
 Python Data Controller for Neural EEG headsets.
@@ -14,6 +14,7 @@ Description
 Streams EEG data to a browser for data handling.
 Works with Chrome and Firefox.
 
+<img src="./git-Images/CyKITpreview.png" width=70% height=70% ><br><br>
 <img src="http://cymaticorp.com/edu/CyKITv2-/CyKITv2-example.png" width=70% height=70% ><br>
 
 Dependencies
@@ -31,6 +32,8 @@ Installation
 
 Usage
 -----
+
+<img src="./git-Images/helpFile.png" width=70% height=70% ><br>
 example 1.
 python.exe CyKITv2.py 127.0.0.1 18675 2
 
