@@ -383,7 +383,6 @@ function modelChange(model) {
     client.onData  = function(text) {
         scroll_screen();
         var eeg_resolution = (document.getElementById("myRange").value * .01);
-        console.log(eeg_resolution);
         var div = document.createElement('div');
         contact = text.split(" ");
         var manualControl = document.getElementById("manualControl").checked;
