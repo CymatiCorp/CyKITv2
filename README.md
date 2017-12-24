@@ -1,9 +1,11 @@
+Updated Version (2017.12)
+
 Chat Discussion:
 https://discordapp.com/invite/gTYNWc7 <br>
 (Do not need discord app, just click for browser chat)
 
 <img src="http://cymaticorp.com/edu/CyKITv2-/CyKITv2.png" width=25% height=25% ><br>
-CyKit 2.0 (BETA) for Python 2.7.6 (Windows)
+CyKit 2.0 (2017.12) for Python 2.7.6 (Windows)
 
 Python Data Controller for Neural EEG headsets.
 
