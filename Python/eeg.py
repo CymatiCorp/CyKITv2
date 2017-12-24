@@ -1,15 +1,15 @@
 # -*- coding: utf8 -*-
 #
-# CyKIT v2 - 2017.11
-# ====================
+# CyKIT v2 - 2017.12.23 
+# ========================
 # Emokit Written by Cody Brocious
 # Emokit Written by Kyle Machulis
 # CyKIT  Written by Warren
 # Contributions  by Severin Lemaignan
 # Contributions  by Sharif Olorin
 # Contributions  by Bill Schumacher
+# Contributions  by CaptainSmiley
 #
-
 import time
 import os
 import sys
