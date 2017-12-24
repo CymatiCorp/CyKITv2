@@ -64,15 +64,26 @@ Note: Does not currently stream to openvibe. <br>
 
 Beta
 ----
-Currently the automatic rendering for certain EEG controllers does not work,
-manual control should work for all devices.
 
-Battery level might not report correctly on some devices.
+Gyro Data not yet supported. 
+Depending on the headset, you may be able to view gyros in manual control.
+Epoc+ gyros will not currently be displayed.
+Note: Switching to Gyro-mode may cause EEG to stop displaying. 
+Refresh the browser if this occurs.
 
-Only the EEG tab is currently functional.
+Recordings work, however it has not been tested with importing
+to any application, and the headers may need some work.
 
-The data will not be formatted correctly on all controllers, and some additional
-work needs to be done in this area.
-
-* Feel free to offer comments and suggests via Issues, <br>
-or submit new push requests, if you have something to contribute.
+Todo:
+ Fix (All, Counter) buttons.
+ Add Gyros.
+ Add Game.
+ Add Epoc+ Settings change.
+ Fix CSV header data.
+ Add OpenVIBE support.
+ Add Generic TCP layer.
+ Fix Misc. visual bugs with scrolling.
+ 
+* Feel free to offer comments and suggests via Issues, for further
+information check our Discord server.  Submit new push requests, 
+if you have something to contribute.
