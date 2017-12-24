@@ -1,11 +1,10 @@
 /*
   CyKITv2 
-  Cy.SocketClient.js 2017.11
+  Cy.SocketClient.js 2017.12
   ============================
   Written by Warren
   
-  CyKITv2 CyWebSocket client for dispatching event-driven data to eeg.py
-  
+  CyKITv2 CyWebSocket client for dispatching event-driven data to emotiv.py
 */
 
 function CySocketClient(ip,port,query) {
@@ -19,7 +18,6 @@ function CySocketClient(ip,port,query) {
             _this.onOpen();
         }
         this.socket.onmessage = function(event) {
-            // console.log(event);
             data = event.data;
             data = data.split("<split>");
             _this.uid = data[0];
