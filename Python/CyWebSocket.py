@@ -1,10 +1,10 @@
 # -*- coding: utf8 -*-
 # 
-# pywebsocketserver  2017.11
+# pywebsocketserver  2017.12.23
 # ============================
 # Written  by suxianbaozi
 #
-# CyWebSocket.py     2017.11
+# CyWebSocket.py     2017.12.23
 # ============================
 # Modified by Warren
 #
