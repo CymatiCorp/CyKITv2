@@ -65,25 +65,27 @@ Note: Does not currently stream to openvibe. <br>
 Beta
 ----
 
-Gyro Data not yet supported. 
-Depending on the headset, you may be able to view gyros in manual control.
-Epoc+ gyros will not currently be displayed.
-Note: Switching to Gyro-mode may cause EEG to stop displaying. 
-Refresh the browser if this occurs.
+Updated 12.23.2017
 
-Recordings work, however it has not been tested with importing
-to any application, and the headers may need some work.
+Gyro Data not yet supported.  <br>
+Depending on the headset, you may be able to view gyros in manual control. <br>
+Epoc+ gyros will not currently be displayed. <br>
+Note: Switching to Gyro-mode may cause EEG to stop displaying.  <br>
+Refresh the browser if this occurs. <br>
 
-Todo:
- Fix (All, Counter) buttons.
- Add Gyros.
- Add Game.
- Add Epoc+ Settings change.
- Fix CSV header data.
- Add OpenVIBE support.
- Add Generic TCP layer.
- Fix Misc. visual bugs with scrolling.
+Recordings work, however it has not been tested with importing <br>
+to any application, and the headers may need some work. <br>
+
+Todo: <br>
+ Fix (All, Counter) buttons. <br>
+ Add Gyros. <br>
+ Add Game. <br>
+ Add Epoc+ Settings change. <br>
+ Fix CSV header data. <br>
+ Add OpenVIBE support. <br>
+ Add Generic TCP layer. <br>
+ Fix Misc. visual bugs with scrolling. <br>
  
-* Feel free to offer comments and suggests via Issues, for further
-information check our Discord server.  Submit new push requests, 
-if you have something to contribute.
+* Feel free to offer comments and suggests via Issues, for further <br>
+information check our Discord server.  Submit new push requests,  <br>
+if you have something to contribute. <br>
