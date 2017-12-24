@@ -19,7 +19,6 @@ import threading
 import hashlib
 import base64
 import struct
-import json
 
 class socketIO():
     
