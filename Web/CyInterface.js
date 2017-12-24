@@ -1,7 +1,7 @@
 /*
   CyKITv2 
-  CyInterface.js 2017.12
-  ========================
+  CyInterface.js 2017.12.23
+  ===========================
   Written by Warren
   
   CyKITv2 HTML back-end for controlling interface and handling data.
