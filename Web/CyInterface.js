@@ -1,6 +1,6 @@
 /*
   CyKITv2 
-  CyInterface.js 2017.12.23
+  CyInterface.js 2017.12.28
   ===========================
   Written by Warren
   
@@ -146,6 +146,8 @@ function modelChange(model) {
         window.addEventListener('resize', resizeCanvas, true);
 
         update_sensorList(headset[selected_model].replace('epoc_plus','epoc'));
+        
+        document.getElementById('CyMode').onclick();
         
         var check_Manual = document.querySelector('input[id=manualControl]');
         check_Manual.addEventListener('change', function (event) {
@@ -310,15 +312,20 @@ function modelChange(model) {
                 cyStatus.innerHTML = "Connected.";
                 cyPicture.style.backgroundImage = "url('./images/CyKITv2-bg-on.png')";
             }
-            
-            if (newCmd[1] == "Info") {
-                if (newCmd[2] == "Device") {
-                    cyDevice.innerHTML = newCmd[3];
-                }
-            }
-            
+                       
             if (newCmd[2] == "Serial") {
                 cySerial.innerHTML = newCmd[3];
+            }
+
+            if (newCmd[2] == "Device") {
+                cyDevice.innerHTML = newCmd[3];
+                var settingsButton = document.getElementById("settingsButton");
+                if (cyDevice.innerHTML == "EPOC+") {
+                    settingsButton.disabled = false;
+                }
+                else {
+                    settingsButton.disabled = true;
+                }
             }
 
             // Key Detection.            
@@ -332,6 +339,8 @@ function modelChange(model) {
                     selectINSIGHT.style.visibility = 'hidden';
                     selectEPOC.style.visibility = 'visible';
                     
+                    var sensorOption = document.createElement("option");
+                    var sensorList = document.getElementById("CySelect");
                     sensorOption.text = "Select Sensor";
                     sensorList.add(sensorOption);
                     
@@ -347,6 +356,9 @@ function modelChange(model) {
                 if (selected_model == 4 || selected_model == 3) {
                     selectINSIGHT.style.visibility = 'visible';
                     selectEPOC.style.visibility = 'hidden';
+                    
+                    var sensorOption = document.createElement("option");
+                    var sensorList = document.getElementById("CySelect");
                     
                     sensorOption.text = "Select Sensor";
                     sensorList.add(sensorOption);
@@ -366,10 +378,7 @@ function modelChange(model) {
                 if (selected_model == 6 || selected_model == 5) {
                     selectINSIGHT.style.visibility = 'hidden';
                     selectEPOC.style.visibility = 'visible';
-
-                    var settingsButton = document.getElementById("settingsButton");
-                    settingsButton.disabled = false;
-                    
+                   
                     update_sensorList('epoc');
 
                 }
@@ -383,13 +392,14 @@ function modelChange(model) {
     client.onData  = function(text) {
         scroll_screen();
         var eeg_resolution = (document.getElementById("myRange").value * .01);
+        console.log(eeg_resolution);
         var div = document.createElement('div');
         contact = text.split(" ");
         var manualControl = document.getElementById("manualControl").checked;
         
         // Epoc     
         // ======    
-        if (selected_model == 2) {
+        if (selected_model == 2 || selected_model == 1) {
             
             oldx = cy_x;
                 if (scroll_check) {
@@ -462,7 +472,7 @@ function modelChange(model) {
         
         // Insight
         // =========
-        if (selected_model == 4) {
+        if (selected_model == 4 || selected_model == 3) {
             
             if (baseline[1] == null || reset_baseline == true) {
                 for (i = 0; i < 33; i++) {
@@ -531,7 +541,7 @@ function modelChange(model) {
         
         // Epoc+ 
         // =======
-        if (selected_model == 6) {
+        if (selected_model == 6 || selected_model == 5) {
 
             //Check Battery Level. 
             if (contact[0] == 255) {
@@ -798,7 +808,56 @@ document.getElementById('cyConnect').onclick = function(e) {
     client.connect();
 }
 
-// Disconnect Button.
+document.getElementById('CySample').onclick = function(e) {
+ update_settings_mode();    
+}
+document.getElementById('CyGyro').onclick = function(e) {
+ update_settings_mode();    
+}
+
+function update_settings_mode() {
+    var cyMode = document.getElementById("CyMode");
+    var cySample = document.getElementById("CySample");
+    var cyGyro = document.getElementById("CyGyro");
+    
+    var Data_Gyro_Rate = { 0: [1,2,3,4], 1: [5,6,7,8] }
+
+    if (cyMode.value == "Epoc+") {
+        Cy_Settings_Mode = Data_Gyro_Rate[cySample.selectedIndex][cyGyro.selectedIndex];
+        console.log(Cy_Settings_Mode);
+    }
+}
+document.getElementById('CyMode').onclick = function(e) {
+    var cyMode = document.getElementById("CyMode");
+    var cySample = document.getElementById("CySample");
+    var cyGyro = document.getElementById("CyGyro");
+    
+    if (cyMode.selectedOptions[0].id == "mode-EPOC") {
+        cySample.disabled = true;
+        cyGyro.disabled = true;
+        Cy_Settings_Mode = 0;
+        cySample.selectedIndex = 0;
+        cyGyro.selectedIndex = 1;
+    }
+    else {
+        cySample.disabled = false
+        cyGyro.disabled = false;
+        Cy_Settings_Mode = 1;
+        cySample.selectedIndex = 0;
+        cyGyro.selectedIndex = 0;
+    }
+    
+}
+
+document.getElementById('cyUpdateSetting').onclick = function(e) {
+    var cyDevice = document.getElementById("CyDevice");
+    if (cyDevice.innerHTML == "EPOC+") {
+        if (Cy_Settings_Mode != null) {
+            client.sendData("CyKITv2:::UpdateSettings:::" + Cy_Settings_Mode);
+        }
+    }
+}
+
 document.getElementById('cyDisconnect').onclick = function(e) {
     var cyPicture = document.getElementById("CyKIT-picture");
     cyPicture.style.backgroundImage = "url('./images/CyKITv2-bg-off.png')";
