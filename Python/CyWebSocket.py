@@ -1,10 +1,10 @@
 # -*- coding: utf8 -*-
 # 
-# pywebsocketserver  2017.12.23
+# pywebsocketserver  2017.12.28
 # ===============================
 # Written  by suxianbaozi
 #
-# CyWebSocket.py     2017.12.23
+# CyWebSocket.py     2017.12.28
 # ===============================
 # Modified by Warren
 #
@@ -232,3 +232,7 @@ class socketIO():
 
         self.con.send(struct.pack("!%ds"%(length,),text))
         
+        
+        
+
+
