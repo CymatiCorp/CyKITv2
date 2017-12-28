@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 #
-# CyKIT v2 - 2017.12.23 
-# ========================
+# CyKIT v2 - 2017.12.28 
+# =======================
 # Emokit Written by Cody Brocious
 # Emokit Written by Kyle Machulis
 # CyKIT  Written by Warren
@@ -10,6 +10,7 @@
 # Contributions  by Bill Schumacher
 # Contributions  by CaptainSmiley
 #
+
 import time
 import os
 import sys
@@ -29,6 +30,7 @@ class MyIO():
     
     def __init__(self):
         self.format = 0;
+        self.update_epoc = None
         self.newMask = None
         self.status = False
         self.setMask = []
@@ -53,6 +55,9 @@ class MyIO():
             if ioCommand[1] == "InfoRequest":
                 self.server.sendData("CyKITv2:::Info:::Device:::" + str(self.infoDevice))
                 self.server.sendData("CyKITv2:::Info:::Serial:::" + str(self.infoSerial))
+            if ioCommand[1] == "UpdateSettings":
+                self.update_epoc = int(ioCommand[2])
+                
             if ioCommand[1] == "RecordStart":
                 if self.recording == True:
                     self.recording = False
@@ -152,6 +157,13 @@ class MyIO():
         aModel = self.newModel
         self.newModel = 0
         return self.aModel
+     
+    def update_epoc_settings(self, change):
+        if change == 0:
+            return self.update_epoc
+        else:
+            self.update_epoc = None
+            return
     
     def startRecord(self, recordPacket):
         try:
@@ -186,8 +198,11 @@ class MyIO():
         self.newMask = None
         return self.setMask[int(select)]
     
+    def setReport(self, report):
+        self.report = report
+        self.epoc_plus_usb = True
+    
     def setInfo(self, info, infoData):
-
         if info == "Device":
             self.infoDevice = str(infoData)
         if info == "Serial":
@@ -219,6 +234,8 @@ class EEG(object):
         self.thread.setDaemon = False
         self.stop_thread = False
         self.samplingRate = 128
+        self.epoc_plus_usb = False
+        self.report = None
         
         self.mask = {}
         self.mask[0] = [10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7]
@@ -281,7 +298,7 @@ class EEG(object):
     
     def Setup(self, model, config):
         # 'EPOC BCI', 'Brain Waves', 'Brain Computer Interface USB Receiver/Dongle', 'Receiver Dongle L01'
-        deviceList = ['EEG Signals', '00000000000', 'Emotiv RAW DATA']
+        deviceList = ['EPOC+','EEG Signals', '00000000000', 'Emotiv RAW DATA']
         devicesUsed = 0
         
         threadMax = 0
@@ -314,7 +331,11 @@ class EEG(object):
                             device.set_raw_data_handler(self.dataHandler)
                         print "> Using Device: " + device.product_name + "\r\n"
                         print "  Serial Number: " + device.serial_number + "\r\n\r\n"
-        
+                        if device.product_name == 'EPOC+':
+                            deviceList[1] = 'empty'
+                            #self.myIOinstance.setReport("Device", device.find_output_reports())
+                            
+                        #print str(self.report)
         if devicesUsed == 0 or i == 0:
             print "\r\n> No Device Selected. Exiting . . ."
             os._exit(0)
@@ -405,18 +426,52 @@ class EEG(object):
             print "   " + str(thread_name[0]) + " ::: " + str(t.getName()) + ">"
         print "} \r\n"
         self.lock.release()
-                
+        print str(self.myIOinstance.status)
         if self.myIOinstance.status == True:
             myio.sendData(1, "CyKITv2:::Info:::Device:::" + str(self.hid.product_name))
-            myio.sendData(1, "CyKITv2:::Info:::Serial:::" + str(self.serial_number))
+            myio.sendData(1, "CyKITv2:::Info:::Serial:::" + str(self.hid.serial_number))
             myio.sendData(1, "CyKITv2:::Info:::KeyModel:::" + str(self.KeyModel))
-            
+
         while self.running:
             if self.myIOinstance.status != True:
                 return        
+
+            if self.myIOinstance.update_epoc_settings(0) != None:
+                try:
+                    EPOC_ChangeMode = self.myIOinstance.update_epoc_settings(0)
+                    self.myIOinstance.update_epoc_settings(1);
+                    print str(EPOC_ChangeMode)
+                    ep_mode = [0x0] * 32
+                    ep_mode[1:4] = [0x55,0xAA,0x20,0x12] 
+                    ep_select = [0x00,0x82,0x86,0x8A,0x8E,0xE2,0xE6,0xEA,0xEE]
+                    ep_mode[5] = ep_select[EPOC_ChangeMode]
+                    print str(ep_mode)
+                    print str(len(ep_mode))
+                    #0 EPOC                                  0x00 (d.000)
+                    #1 EPOC+ 128hz 16bit - MEMS off          0x82 (d.130)
+                    #2 EPOC+ 128hz 16bit - MEMS 32hz 16bit   0x86 (d.134)
+                    #3 EPOC+ 128hz 16bit - MEMS 64hz 16bit   0x8A (d.138)
+                    #4 EPOC+ 128hz 16bit - MEMS 128hz 16bit  0x8E (d.142)
+                    #5 EPOC+ 256hz 16bit - MEMS off          0xE2 (d.226)
+                    #6 EPOC+ 256hz 16bit - MEMS 32hz 16bit   0xE6 (d.230)
+                    #7 EPOC+ 256hz 16bit - MEMS 64hz 16bit   0xEA (d.234)
+                    #8 EPOC+ 256hz 16bit - MEMS 128hz 16bit  0xEE (d.238)
+                    
+                    report = self.hid.find_output_reports()
+                    report[0].set_raw_data(ep_mode)
+                    report[0].send()
+                    print "sending packet!"
+                    
+                
+                except Exception, exception:
+                    print("Oops!",sys.exc_info()[0],"occured.")
+                    print exception
+                    print sys.exc_traceback.tb_lineno 
+                
+              
             if self.blank_data == True:
                 self.dataHandler("")
-              
+            
             while not tasks.empty():
                 check_mask = self.myIOinstance.maskChange()
                 
@@ -477,7 +532,7 @@ class EEG(object):
                             if self.outputData == True:
                                 print str(counter_data + packet_data)
                     
-                    if self.KeyModel == 6:
+                    if self.KeyModel == 6 or self.KeyModel == 5:
                         
                         if self.no_counter == True:
                             counter_data = ""
