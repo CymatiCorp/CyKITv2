@@ -1,7 +1,7 @@
 /*
   CyKITv2 
-  Cy.SocketClient.js 2017.12
-  ============================
+  Cy.SocketClient.js 2017.12.28
+  ===============================
   Written by Warren
   
   CyKITv2 CyWebSocket client for dispatching event-driven data to emotiv.py
