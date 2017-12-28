@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 #
-# CyKIT v2 - 2017.12.23
+# CyKIT v2 - 2017.12.28
 # =======================
 # Written by Warren
 #
