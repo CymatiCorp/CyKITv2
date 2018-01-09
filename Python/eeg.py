@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 #
-# CyKIT v2 - 2017.12.28 
+# CyKIT v2 - 2018.01.08
 # =======================
 # Emokit Written by Cody Brocious
 # Emokit Written by Kyle Machulis
@@ -38,6 +38,9 @@ class MyIO():
         self.recording = False
         self.recordInc = 1
         self.recordFile = "EEG_recording_"
+        self.Delimiter = ", "
+        self.samplingRate = 128
+        self.channels = 40
         self.f = None
         
     def onData(self, uid, text):
@@ -86,14 +89,12 @@ class MyIO():
                 try:
                     self.f = file('./EEG-Logs/' + self.recordFile + '.csv', 'a')
                     self.f = open('./EEG-Logs/' + self.recordFile + '.csv', 'a')
-                    cdate = datetime.datetime.now()
-                    
                     
                     csvHeader = ""
                     csvHeader += "title: " + self.recordFile + ", "
-                    csvHeader += "recorded: " + str(strftime("%d.%m.%y %H.%M.%S, "))
+                    csvHeader += "recorded: " + str(time.strftime("%d.%m.%y %H.%M.%S, "))
                     csvHeader += "timestamp started:2017-11-21T16:17:43.558438-08:00            , "
-                    csvHeader += "sampling:" + self.samplingRate 
+                    csvHeader += "sampling:" + str(self.samplingRate) + ", "
                     csvHeader += "subject:, "
                     csvHeader += "labels:COUNTER INTERPOLATED "
                     if self.KeyModel == 3 or self.KeyModel == 4:
@@ -104,14 +105,17 @@ class MyIO():
                         csvHeader += "AF3 F7 F3 FC5 T7 P7 O1 O2 P8 T8 FC6 F4 F8 AF4 "
                         csvHeader += "RAW_CQ GYROX GYROY MARKER MARKER_HARDWARE SYNC TIME_STAMP_s TIME_STAMP_ms "
                         csvHeader += "CQ_AF3 CQ_F7 CQ_F3 CQ_FC5 CQ_T7 CQ_P7 CQ_O1 CQ_O2 CQ_P8 CQ_T8 CQ_FC6 CQ_F4 CQ_F8 CQ_AF4 CQ_CMS CQ_DRL, "
-                    csvHeader += "chan:40, "
+                    csvHeader += ", "
+                    csvHeader += "chan:" + str(self.channels) + ", "
                     csvHeader += "samples:5000, "
-                    csvHeader += "units:emotiv\r\n"
+                    csvHeader += "units:emotiv"
                     print >>self.f, csvHeader
                     os.fsync(self.f.fileno())
                     self.recording = True
                     
-                except:
+                except Exception, msg:
+                    print "Error: " + str(msg)
+                    
                     pass
                 
             if ioCommand[1] == "RecordStop":
@@ -178,7 +182,17 @@ class MyIO():
             self.f.flush()
             os.fsync(self.f.fileno())
             self.f.close()
-        except:
+            # Remove last line.
+            #
+            #with open('./EEG-Logs/' + self.recordFile + '.csv', 'r+') as f:
+            #    f.seek(0, os.SEEK_END) 
+            #    while f.tell() and f.read(2) != '\r\n':
+            #        f.seek(-4, os.SEEK_CUR)
+            #    f.truncate()
+            
+        except Exception, msg:
+            print "Error: " + str(msg)
+                    
             pass
             
     def formatChange(self, newFormat):
@@ -190,7 +204,35 @@ class MyIO():
         
     def isRecording(self):
         return self.recording
+    
+    def setSampling(self, rate):
+        self.samplingRate = int(rate)
+        return
+    
+    def getSampling(self):
+        return self.samplingRate
         
+    def setChannels(self, total):
+        self.channels = int(total)
+        return
+    
+    def getChannels(self):
+        return self.channels
+    
+    def setKeyModel(self, key):
+        self.KeyModel = key
+        return
+    
+    def getKeyModel(self):
+        return self.KeyModel
+
+    def setDelimiter(self, string):
+        self.Delimiter = str(string)
+        return
+    
+    def getDelimiter(self):
+        return str(self.Delimiter)
+    
     def maskChange(self):
         return self.newMask
     
@@ -236,6 +278,9 @@ class EEG(object):
         self.samplingRate = 128
         self.epoc_plus_usb = False
         self.report = None
+        self.Delimiter = ", "
+        self.channels = 40
+        self.blankCSV = False
         
         self.mask = {}
         self.mask[0] = [10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7]
@@ -257,6 +302,11 @@ class EEG(object):
             self.blank_data = True
         else:
             self.blank_data = False
+        
+        if "blankcsv" in config:
+            self.blankCSV = True
+        else:
+            self.blankCSV = False
         
         if "noCounter" in config:
             self.no_counter = True
@@ -352,30 +402,41 @@ class EEG(object):
         if model == 1:
             k = [sn[-1],'\0',sn[-2],'H',sn[-1],'\0',sn[-2],'T',sn[-3],'\x10',sn[-4],'B',sn[-3],'\0',sn[-4],'P']
             self.samplingRate = 128
+            self.channels = 40
             
         # --- Model 2 > [Epoc::Standard]
         if model == 2:   
             k = [sn[-1],'\0',sn[-2],'T',sn[-3],'\x10',sn[-4],'B',sn[-1],'\0',sn[-2],'H',sn[-3],'\0',sn[-4],'P']
             self.samplingRate = 128
+            self.channels = 40
             
         # --- Model 3 >  [Insight::Research]
         if model == 3:
             k = [sn[-2],'\0',sn[-1],'D',sn[-2],'\0',sn[-1],'\x0C',sn[-4],'\0',sn[-3],'\x15',sn[-4],'\0',sn[-3],'X']
             self.samplingRate = 128
+            self.channels = 20
             
         # --- Model 4 > [Insight::Standard]
         if model == 4: 
             k = [sn[-1],'\0',sn[-2],'\x15',sn[-3],'\0',sn[-4],'\x0C',sn[-3],'\0',sn[-2],'D',sn[-1],'\0',sn[-2],'X']
             self.samplingRate = 128
+            self.channels = 20
             
         # --- Model 5 > [Epoc+::Research]
         if model == 5:
             k = [sn[-2],sn[-1],sn[-2],sn[-1],sn[-3],sn[-4],sn[-3],sn[-4],sn[-4],sn[-3],sn[-4],sn[-3],sn[-1],sn[-2],sn[-1],sn[-2]]
             self.samplingRate = 256
+            self.channels = 40
             
         # --- Model 6 >  [Epoc+::Standard]
         if model == 6:
             k = [sn[-1],sn[-2],sn[-2],sn[-3],sn[-3],sn[-3],sn[-2],sn[-4],sn[-1],sn[-4],sn[-2],sn[-2],sn[-4],sn[-4],sn[-2],sn[-1]]
+            self.samplingRate = 256
+            self.channels = 40
+            
+        self.myIOinstance.setSampling(self.samplingRate)
+        self.myIOinstance.setChannels(self.channels)
+        self.myIOinstance.setKeyModel(model)
         
         key = ''.join(k)
         print "key = " + str(key)
@@ -426,15 +487,21 @@ class EEG(object):
             print "   " + str(thread_name[0]) + " ::: " + str(t.getName()) + ">"
         print "} \r\n"
         self.lock.release()
-        print str(self.myIOinstance.status)
+
+        # Send information to CyInterface.
+        
+        self.Delimiter = str(self.myIOinstance.getDelimiter())
+        
         if self.myIOinstance.status == True:
             myio.sendData(1, "CyKITv2:::Info:::Device:::" + str(self.hid.product_name))
             myio.sendData(1, "CyKITv2:::Info:::Serial:::" + str(self.hid.serial_number))
             myio.sendData(1, "CyKITv2:::Info:::KeyModel:::" + str(self.KeyModel))
-
+            myio.sendData(1, "CyKITv2:::Info:::Delimiter:::" + str(self.Delimiter))
+        
+        
         while self.running:
             if self.myIOinstance.status != True:
-                return        
+                return
 
             if self.myIOinstance.update_epoc_settings(0) != None:
                 try:
@@ -489,9 +556,9 @@ class EEG(object):
                     packet_data = ""
                     
                     if self.KeyModel == 0:
-                        counter_data = str(ord(data[0])) + " "
+                        counter_data = str(ord(data[0])) + self.Delimiter
                         for i in range(1,len(data)):
-                            packet_data = packet_data + str(ord(data[i])) + " "
+                            packet_data = packet_data + str(ord(data[i])) + self.Delimiter
                             
                     if self.KeyModel == 2:
                         counter_data = str(ord(data[0])) + " "
@@ -499,7 +566,7 @@ class EEG(object):
                         # No Format (Default)
                         if self.format < 1:
                             for i in range(0,14):
-                                packet_data = packet_data + str(self.convertEPOC(data, self.mask[i])) + " "
+                                packet_data = packet_data + str(self.convertEPOC(data, self.mask[i])) + self.Delimiter
                             if self.myIOinstance.isRecording() == True:
                                 self.myIOinstance.startRecord(counter_data + packet_data)
                             if self.outputData == True:
@@ -508,7 +575,8 @@ class EEG(object):
                         # Format 1
                         if self.format == 1:
                             for i in range(1, len(data)):
-                                packet_data = packet_data + str(ord(data[i])) + " "
+                                packet_data = packet_data + str(ord(data[i])) + self.Delimiter
+                            packet_data = packet_data[:-len(self.Delimiter)]
                             if self.myIOinstance.isRecording() == True:
                                 self.myIOinstance.startRecord(counter_data + packet_data)
                             if self.outputData == True:
@@ -518,7 +586,8 @@ class EEG(object):
                         counter_data = str(ord(data[0])) + " "
                         if self.format < 1:
                             for i in range(0,14):
-                                packet_data = packet_data + str(self.convertEPOC(data, self.mask[i])) + ".0 "
+                                packet_data = packet_data + str(self.convertEPOC(data, self.mask[i])) + self.Delimiter
+                            packet_data = packet_data[:-len(self.Delimiter)]
                             if self.myIOinstance.isRecording() == True:
                                 self.myIOinstance.startRecord(counter_data + packet_data)
                             if self.outputData == True:
@@ -526,7 +595,8 @@ class EEG(object):
                         
                         if self.format == 1:
                             for i in range(1,len(data)):
-                                packet_data = packet_data + str(ord(data[i])) + " "
+                                packet_data = packet_data + str(ord(data[i])) + self.Delimiter
+                            packet_data = packet_data[:-len(self.Delimiter)]
                             if self.myIOinstance.isRecording() == True:
                                 self.myIOinstance.startRecord(counter_data + packet_data)
                             if self.outputData == True:
@@ -537,20 +607,28 @@ class EEG(object):
                         if self.no_counter == True:
                             counter_data = ""
                         else:
-                            counter_data = str(ord(data[0])) + " " + str(ord(data[1])) + " "
+                            counter_data = str(ord(data[0])) + self.Delimiter + str(ord(data[1])) + self.Delimiter
                                 
                         # Format 0: Default.  
                         if self.format < 1:
                             for i in range(2,16,2):
-                                packet_data = packet_data + str(self.convertEPOC_PLUS(str(ord(data[i])), str(ord(data[i+1])))) + " "
+                                packet_data = packet_data + str(self.convertEPOC_PLUS(str(ord(data[i])), str(ord(data[i+1])))) + self.Delimiter
                             
                             for i in range(18,len(data),2):
-                                packet_data = packet_data + str(self.convertEPOC_PLUS(str(ord(data[i])), str(ord(data[i+1])))) + " "
+                                packet_data = packet_data + str(self.convertEPOC_PLUS(str(ord(data[i])), str(ord(data[i+1])))) + self.Delimiter
+                            
+                            packet_data = packet_data[:-len(self.Delimiter)]
                             
                             if self.nobattery == False:
-                                    packet_data = packet_data + str(ord(data[16])) + " " + str(ord(data[17])) 
+                                    packet_data = packet_data + self.Delimiter + str(ord(data[16])) + str(self.Delimiter) + str(ord(data[17])) 
                             
                             if self.myIOinstance.isRecording() == True:
+                                if self.blankCSV == True:
+                                    
+                                    emptyCSV = "0, " * int(self.channels - (16 + abs((self.nobattery & 1) *-2)))
+                                    
+                                    emptyCSV = emptyCSV[:-2]
+                                    packet_data = packet_data + self.Delimiter + emptyCSV
                                 self.myIOinstance.startRecord(counter_data + packet_data)
                             
                             if self.outputData == True:
@@ -559,16 +637,16 @@ class EEG(object):
                         # Format 1    
                         if self.format == 1:
                                 for i in range(2,16,2):
-                                    packet_data = packet_data + str(ord(data[i])) + " " + str(ord(data[i+1])) + " "
+                                    packet_data = packet_data + str(ord(data[i])) + self.Delimiter + str(ord(data[i+1])) + self.Delimiter
 
                                 for i in range(18,len(data),2):
-                                    packet_data = packet_data + str(ord(data[i])) + " " + str(ord(data[i+1])) + " "
-                                
+                                    packet_data = packet_data + str(ord(data[i])) + self.Delimiter + str(ord(data[i+1])) + self.Delimiter
+                                packet_data = packet_data[:-len(self.Delimiter)]
                                 if self.myIOinstance.isRecording() == True:
                                     self.myIOinstance.startRecord(counter_data + packet_data)
                                 
                                 if self.nobattery == False:
-                                    packet_data = packet_data + str(ord(data[16])) + " " + str(ord(data[17])) 
+                                    packet_data = packet_data + self.Delimiter + str(ord(data[16])) + self.Delimiter + str(ord(data[17])) 
                                 
                                 if self.outputData == True:
                                     print str(counter_data + packet_data)
