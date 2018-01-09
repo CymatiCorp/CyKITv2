@@ -1,6 +1,6 @@
 /*
   CyKITv2 
-  CyInterface.js 2017.12.28
+  CyInterface.js 2018.01.08
   ===========================
   Written by Warren
   
@@ -32,6 +32,7 @@ btx.fillStyle = graphPattern;
 var canvasWidth = cyCanvas.width;
 var canvasHeight = cyCanvas.height;
 var selected_model = 0;
+var delimiter = ", ";
 var viewType = "16";     // Default:: (16 = Data)           (32 = Gyro)
 var formatType = 0; //  Default:: (0  = Floating Point) (1  = Raw Data)
 var mems_x = 100;
@@ -327,66 +328,69 @@ function modelChange(model) {
                     settingsButton.disabled = true;
                 }
             }
+            if (newCmd[1] == "Info") {
+                if (newCmd[2] == "Delimiter") {
+                    delimiter = newCmd[3]
+                }
+                // Key Detection.            
+                if (newCmd[2] == "KeyModel") {
+                    cyKeyModel.innerHTML = newCmd[3];
+                    if (selected_model == parseInt(newCmd[3])) { return; }
+                    selected_model = parseInt(newCmd[3])
 
-            // Key Detection.            
-            if (newCmd[2] == "KeyModel") {
-                cyKeyModel.innerHTML = newCmd[3];
-                if (selected_model == parseInt(newCmd[3])) { return; }
-                selected_model = parseInt(newCmd[3])
-
-                // Epoc Detected.
-                if (selected_model == 2 || selected_model == 1) {
-                    selectINSIGHT.style.visibility = 'hidden';
-                    selectEPOC.style.visibility = 'visible';
-                    
-                    var sensorOption = document.createElement("option");
-                    var sensorList = document.getElementById("CySelect");
-                    sensorOption.text = "Select Sensor";
-                    sensorList.add(sensorOption);
-                    
-                    for (i = 0; i < 17; i++) {
+                    // Epoc Detected.
+                    if (selected_model == 2 || selected_model == 1) {
+                        selectINSIGHT.style.visibility = 'hidden';
+                        selectEPOC.style.visibility = 'visible';
+                        
                         var sensorOption = document.createElement("option");
-                        sensorOption.text = epocContacts[i];
-                        sensorOption.value = i;
+                        var sensorList = document.getElementById("CySelect");
+                        sensorOption.text = "Select Sensor";
                         sensorList.add(sensorOption);
+                        
+                        for (i = 0; i < 17; i++) {
+                            var sensorOption = document.createElement("option");
+                            sensorOption.text = epocContacts[i];
+                            sensorOption.value = i;
+                            sensorList.add(sensorOption);
+                        }
                     }
-                }
-                
-                // Insight Detected.
-                if (selected_model == 4 || selected_model == 3) {
-                    selectINSIGHT.style.visibility = 'visible';
-                    selectEPOC.style.visibility = 'hidden';
                     
-                    var sensorOption = document.createElement("option");
-                    var sensorList = document.getElementById("CySelect");
-                    
-                    sensorOption.text = "Select Sensor";
-                    sensorList.add(sensorOption);
-                    
-                    update_sensorList('insight');
-                    
-                    for (i = 0; i < 33; i++) {
+                    // Insight Detected.
+                    if (selected_model == 4 || selected_model == 3) {
+                        selectINSIGHT.style.visibility = 'visible';
+                        selectEPOC.style.visibility = 'hidden';
+                        
                         var sensorOption = document.createElement("option");
-                        sensorOption.text = i;
-                        sensorOption.value = i;
+                        var sensorList = document.getElementById("CySelect");
+                        
+                        sensorOption.text = "Select Sensor";
                         sensorList.add(sensorOption);
+                        
+                        update_sensorList('insight');
+                        
+                        for (i = 0; i < 33; i++) {
+                            var sensorOption = document.createElement("option");
+                            sensorOption.text = i;
+                            sensorOption.value = i;
+                            sensorList.add(sensorOption);
+                        }
+                    
                     }
-                
-                }
-                
-                // Epoc+ Detected.
-                if (selected_model == 6 || selected_model == 5) {
-                    selectINSIGHT.style.visibility = 'hidden';
-                    selectEPOC.style.visibility = 'visible';
-                   
-                    update_sensorList('epoc');
+                    
+                    // Epoc+ Detected.
+                    if (selected_model == 6 || selected_model == 5) {
+                        selectINSIGHT.style.visibility = 'hidden';
+                        selectEPOC.style.visibility = 'visible';
+                       
+                        update_sensorList('epoc');
 
-                }
+                    }
+                    
+                    cyHeadset.innerHTML = modelTypes[selected_model];
                 
-                cyHeadset.innerHTML = modelTypes[selected_model];
-            
+                }
             }
-                
         }
     
     client.onData  = function(text) {
@@ -394,7 +398,7 @@ function modelChange(model) {
         var eeg_resolution = (document.getElementById("myRange").value * .01);
         console.log(eeg_resolution);
         var div = document.createElement('div');
-        contact = text.split(" ");
+        contact = text.split(delimiter);
         var manualControl = document.getElementById("manualControl").checked;
         
         // Epoc     
