@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 #
-# CyKIT v2 - 2018.01.08
-# =======================
+# CyKIT v2 - 2018.Jan.11
+# ========================
 # Emokit Written by Cody Brocious
 # Emokit Written by Kyle Machulis
 # CyKIT  Written by Warren
@@ -298,42 +298,30 @@ class EEG(object):
         self.mask[12] = [214, 215, 200, 201, 202, 203, 204, 205, 206, 207, 192, 193, 194, 195]
         self.mask[13] = [216, 217, 218, 219, 220, 221, 222, 223, 208, 209, 210, 211, 212, 213]
         
-        if "blankdata" in config:
-            self.blank_data = True
-        else:
-            self.blank_data = False
+        if "blankdata" in config:     self.blank_data = True
+        else:                         self.blank_data = False
         
-        if "blankcsv" in config:
-            self.blankCSV = True
-        else:
-            self.blankCSV = False
+        if "blankcsv" in config:      self.blankCSV = True
+        else:                         self.blankCSV = False
         
-        if "noCounter" in config:
-            self.no_counter = True
-        else:
-            self.no_counter = False
-            
-        if "format" in config:
+        if "noCounter" in config:     self.no_counter = True
+        else:                         self.no_counter = False
+                    
+        if "nobattery" in config:     self.nobattery = True
+        else:                         self.nobattery = False
+        
+        if "outputdata" in config:    self.outputData = True
+        else:                         self.outputData = False
+        
+        if "outputencrypt" in config: self.outputEncrypt = True
+        else:                         self.outputEncrypt = False
+        
+        if "format" in config:     
             myFormat = str(config).split("format-")
             self.format = int(myFormat[1][:1])
         else:
             self.format = 0
-        
-        if "nobattery" in config:
-            self.nobattery = True
-        else:
-            self.nobattery = False
-        
-        if "outputdata" in config:
-            self.outputData = True
-        else:
-            self.outputData = False
-        
-        if "outputencrypt" in config:
-            self.outputEncrypt = True
-        else:
-            self.outputEncrypt = False
-        
+            
         print "Format: " + str(self.format)
         self.myIOinstance.formatChange(self.format)
         
@@ -623,13 +611,14 @@ class EEG(object):
                                     packet_data = packet_data + self.Delimiter + str(ord(data[16])) + str(self.Delimiter) + str(ord(data[17])) 
                             
                             if self.myIOinstance.isRecording() == True:
+                                record_data = packet_data
                                 if self.blankCSV == True:
                                     
-                                    emptyCSV = "0, " * int(self.channels - (16 + abs((self.nobattery & 1) *-2)))
+                                    emptyCSV = self.Delimiter * int(self.channels - (16 + abs((self.nobattery & 1) *-2)))
                                     
                                     emptyCSV = emptyCSV[:-2]
-                                    packet_data = packet_data + self.Delimiter + emptyCSV
-                                self.myIOinstance.startRecord(counter_data + packet_data)
+                                    record_data = packet_data + self.Delimiter + emptyCSV
+                                self.myIOinstance.startRecord(counter_data + record_data)
                             
                             if self.outputData == True:
                                 print str(counter_data + packet_data)
