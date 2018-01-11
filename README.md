@@ -49,6 +49,12 @@ python.exe CyKITv2.py 127.0.0.1 12991 6 info+confirm
 * Enter localhost and listen port used to run CyKITv2.py
 * Press "Connect"
 
+Options 
+-------
+<img src="./git-Images/help1.png" width=70% height=70% ><br>
+<img src="./git-Images/help2.png" width=70% height=70% ><br>
+<img src="./git-Images/help4.png" width=70% height=70% ><br>
+
 Features
 --------
 
