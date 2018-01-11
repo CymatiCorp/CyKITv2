@@ -47,16 +47,12 @@ class socketIO():
 
         
     def Handshake(self):
-        
         self.isHandleShake = False
         self.online = True
         self.socketThreadRunning = True
         
     def Connect(self):
-        
         print "* Connecting . . ."
-        
-        
         sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(('',self.port))
@@ -101,9 +97,7 @@ class socketIO():
                         response += '''Sec-WebSocket-Accept: %s\r\n\r\n'''%(resKey,)
                         self.con.send(response)
                         self.isHandleShake = True
-                        
                         self.sendData("SETUID")
-                        
                         self.io.onConnect(self.uid)
                         continue
                         
@@ -162,10 +156,8 @@ class socketIO():
                 except Exception, msg:
                     if msg[0] == 9 or msg[0] == 10053:
                         self.socketThreadRunning = False
-                        
                     
                     print "CyWebSocket().socketIO() Error: " + str(msg)
-                    
                     self.socketThreadRunning = False
                     self.onClose()
                     print str(msg[0])
@@ -202,9 +194,7 @@ class socketIO():
     def sendData(self,text) :
         
         text = self.packData(text)
-        
         self.con.send(struct.pack("!B",0x81))
-        
         length = len(text)
 
         if length<=125:
