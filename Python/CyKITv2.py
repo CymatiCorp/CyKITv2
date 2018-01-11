@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 #
-# CyKIT v2 - 2017.12.28
-# =======================
+# CyKIT v2 - 2018.Jan.11
+# ==========================
 # Written by Warren
 #
 
@@ -31,13 +31,16 @@ if arg_count == 1 or arg_count > 5 or sys.argv[1] == "help" or sys.argv[1] == "-
     print "          6 - Epoc+ (Standard)\r\n\r\n"
     print " " + "_" * 85 + "\r\n"
     print " [config] is optional. \r\n"
-    print "  'info' prints additional information into console.\r\n"
-    print "  'confirm'  Requests you to confirm a device everytime device is initialized.\r\n"
-    print "  'nocounter'  Removes all counters from 'all' outputs.\r\n"
-    print "  'format-0' (Default) Outputs 14 data channels in float format. ('4201.02564096') \r\n"
-    print "  'format-1' Outputs the raw data (to be converted by Javascript or other). \r\n"
-    print "  'outputdata'  Prints the (formatted) data being sent, to the console window.\r\n"
-    print "  'outputencrypt'  Prints the (encrypted) rjindael data to the console window.\r\n\r\n"
+    print "  'info'          Prints additional information into console.\r\n"
+    print "  'confirm'       Requests you to confirm a device everytime device is initialized.\r\n"
+    print "  'nocounter'     Removes all counters from 'all' outputs.\r\n"
+    print "  'format-0'      (Default) Outputs 14 data channels in float format. ('4201.02564096') \r\n"
+    print "  'format-1'      Outputs the raw data (to be converted by Javascript or other). \r\n"
+    print "  'outputdata'    Prints the (formatted) data being sent, to the console window.\r\n"
+    print "  'outputencrypt' Prints the (encrypted) rjindael data to the console window.\r\n\r\n"
+    print "  'blankdata'     Injects a single line of encrypted data into the stream that is \r\n"
+    print "                   consistent with a blank EEG signal. Counter will report 0. \r\n\r\n"
+    print "  'blancsv'       Adds blank channels for each CSV line, to be used with logging.\r\n\r\n"
     print "   Join these words together, using a + separator. \r\n"
     print "   (e.g  info+confirm ) \r\n\r\n"
     print " " + "_" * 85 + "\r\n"
