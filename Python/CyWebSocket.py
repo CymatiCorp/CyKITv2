@@ -1,11 +1,11 @@
 # -*- coding: utf8 -*-
 # 
-# pywebsocketserver  2017.12.28
-# ===============================
+# pywebsocketserver  2018.Jan.11
+# ================================
 # Written  by suxianbaozi
 #
-# CyWebSocket.py     2017.12.28
-# ===============================
+# CyWebSocket.py     2018.Jan.11
+# ================================
 # Modified by Warren
 #
 # Python web server for connecting sockets locally with browsers.
@@ -39,10 +39,7 @@ class socketIO():
         
     def start(self):
         self.socketThreadRunning = True
-        #print "current thread === " + threading.currentThread().getName()
-        #print "Thead alive?? " + str(self.Athread.is_alive)
         for t in threading.enumerate():
-            print str(t.getName())
             if 'ioThread' == t.getName():
                 return
         self.thread.start()
@@ -73,14 +70,7 @@ class socketIO():
         except:
             print "> Not Connected -" + sock.error
         
-        print str(self.con)
-        
-        
         return self.con
-        
-        #while 1:
-        #    data = connection.recv(1024)
-        #    if not data: break
             
         
     def run(self):       
@@ -130,13 +120,11 @@ class socketIO():
                         data_head = self.con.recv(1)
                         
                         if repr(data_head)=='':
-                            #self.socketThreadRunning = False
                             self.onClose()
                             continue
                         
                         header = struct.unpack("B",data_head)[0]
                         opcode = header & 0b00001111
-                        #print "Op Code %d"%(opcode,)
 
                         if opcode==8:
                             print "* Closing Connection."
@@ -218,7 +206,6 @@ class socketIO():
         self.con.send(struct.pack("!B",0x81))
         
         length = len(text)
-       # masking = 0b00000000;
 
         if length<=125:
             self.con.send(struct.pack("!B",length))
@@ -233,6 +220,3 @@ class socketIO():
         self.con.send(struct.pack("!%ds"%(length,),text))
         
         
-        
-
-
