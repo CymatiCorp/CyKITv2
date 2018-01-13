@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 #
-# CyKIT v2 - 2018.Jan.11
+# CyKIT v2 - 2018.Jan.13
 # ========================
 # Emokit Written by Cody Brocious
 # Emokit Written by Kyle Machulis
@@ -16,6 +16,8 @@ import os
 import sys
 import platform
 import socket
+import operator
+import math
 import pywinusb.hid as hid
 from Queue import Queue
 from Crypto.Cipher import AES
@@ -67,6 +69,9 @@ class MyIO():
                     try:
                         self.f.flush()
                         os.fsync(self.f.fileno())
+                        self.f.seek(0, os.SEEK_END)
+                        f_size = self.f.tell()
+                        self.f.truncate((f_size -2))
                         self.f.close()
                     except:
                         pass
@@ -102,7 +107,8 @@ class MyIO():
                         csvHeader += "AF3 T7 Pz T8 AF4 RAW_CQ GYROX GYROY MARKER SYNC TIME_STAMP_s TIME_STAMP_ms CQ_AF3 CQ_T7 CQ_Pz CQ_T8 CQ_AF4, "
                     else:
                         # Epoc/Epoc+
-                        csvHeader += "AF3 F7 F3 FC5 T7 P7 O1 O2 P8 T8 FC6 F4 F8 AF4 "
+                        #csvHeader += "AF3 F7 F3 FC5 T7 P7 O1 O2 P8 T8 FC6 F4 F8 AF4 "
+                        csvHeader += "F3 FC5 AF3 F7 T7 P7 O1 O2 P8 T8 F8 AF4 FC6 F4 "
                         csvHeader += "RAW_CQ GYROX GYROY MARKER MARKER_HARDWARE SYNC TIME_STAMP_s TIME_STAMP_ms "
                         csvHeader += "CQ_AF3 CQ_F7 CQ_F3 CQ_FC5 CQ_T7 CQ_P7 CQ_O1 CQ_O2 CQ_P8 CQ_T8 CQ_FC6 CQ_F4 CQ_F8 CQ_AF4 CQ_CMS CQ_DRL, "
                     csvHeader += ", "
@@ -123,8 +129,15 @@ class MyIO():
                 try:
                     self.f.flush()
                     os.fsync(self.f.fileno())
-                    self.f.close()
-                except:
+                    
+                    self.f.seek(0, os.SEEK_END)
+                    f_size = self.f.tell()
+                    #print "xxx:" + str(self.f.read(2))
+                    self.f.truncate((f_size -2))
+                    
+                    
+                except Exception, msg:
+                    print "Error: " + str(msg)
                     pass
                 self.recording = False
             if ioCommand[1] == "setMask":
@@ -181,8 +194,11 @@ class MyIO():
         try:                 
             self.f.flush()
             os.fsync(self.f.fileno())
-            self.f.close()
-            # Remove last line.
+            self.f.seek(0, os.SEEK_END)
+            f_size = self.f.tell()
+            #print "xxx:" + str(self.f.read(2))
+            self.f.truncate((f_size -2))
+            self.f.close()            # Remove last line.
             #
             #with open('./EEG-Logs/' + self.recordFile + '.csv', 'r+') as f:
             #    f.seek(0, os.SEEK_END) 
@@ -249,7 +265,6 @@ class MyIO():
             self.infoDevice = str(infoData)
         if info == "Serial":
             self.infoSerial = str(infoData)
-            
         return
         
     def setServer(self, server):
@@ -304,11 +319,14 @@ class EEG(object):
         if "blankcsv" in config:      self.blankCSV = True
         else:                         self.blankCSV = False
         
-        if "noCounter" in config:     self.no_counter = True
+        if "nocounter" in config:     self.no_counter = True
         else:                         self.no_counter = False
                     
         if "nobattery" in config:     self.nobattery = True
         else:                         self.nobattery = False
+                            
+        if "baseline" in config:      self.baseline = True
+        else:                         self.baseline = False
         
         if "outputdata" in config:    self.outputData = True
         else:                         self.outputData = False
@@ -607,6 +625,22 @@ class EEG(object):
                             
                             packet_data = packet_data[:-len(self.Delimiter)]
                             
+                            if self.baseline == True:
+                                if baseline_values != None:
+                                    baseline_last = baseline_values
+                                baseline_values = packet_data.split(self.Delimiter)
+                                
+                                if baseline_values != None:
+                                    baseline_values = map(operator.add, baseline_last, baseline_values)
+                                    baseline_values = map(operator.div, baseline_value, ([2] * len(base_values)))
+                                
+                                print str(baseline_values)
+                            #if self.quality == True:
+                            #baseline_values = map(math.sqrt, baseline_values)
+                                
+                                
+                                print str(baseline_values)
+                            
                             if self.nobattery == False:
                                     packet_data = packet_data + self.Delimiter + str(ord(data[16])) + str(self.Delimiter) + str(ord(data[17])) 
                             
@@ -614,7 +648,7 @@ class EEG(object):
                                 record_data = packet_data
                                 if self.blankCSV == True:
                                     
-                                    emptyCSV = self.Delimiter * int(self.channels - (16 + abs((self.nobattery & 1) *-2)))
+                                    emptyCSV = ("0" + self.Delimiter) * int(self.channels - (16 + abs((self.nobattery & 1) *-2)))
                                     
                                     emptyCSV = emptyCSV[:-2]
                                     record_data = packet_data + self.Delimiter + emptyCSV
