@@ -31,6 +31,7 @@ tasks = Queue()
 class MyIO():
     
     def __init__(self):
+        self.generic = False
         self.format = 0;
         self.update_epoc = None
         self.newMask = None
@@ -156,7 +157,13 @@ class MyIO():
         self.newMask = None
         self.server.sendData("CyKITv2:::Connected")
         return
-        
+    
+    def onGeneric(self, uid):
+        self.status = True
+        self.generic = True
+        self.server.sendData("CyKITv2:::Connected")
+        return
+    
     def sendData(self, uid, text):
         self.server.sendData(text)
         return      
@@ -191,7 +198,9 @@ class MyIO():
             pass
 
     def stopRecord(self):
-        try:                 
+        try:              
+            if self.f == None:
+                return
             self.f.flush()
             os.fsync(self.f.fileno())
             self.f.seek(0, os.SEEK_END)
@@ -246,6 +255,9 @@ class MyIO():
         self.Delimiter = str(string)
         return
     
+    def isGeneric(self):
+        return self.generic
+        
     def getDelimiter(self):
         return str(self.Delimiter)
     
@@ -277,6 +289,7 @@ class EEG(object):
         global running
         global myIOinstance
         config = config.lower()
+        self.time_delay = .001
         self.KeyModel = model
         self.eeg_devices = []
         self.running = True
@@ -296,6 +309,7 @@ class EEG(object):
         self.Delimiter = ", "
         self.channels = 40
         self.blankCSV = False
+        self.generic = False
         
         self.mask = {}
         self.mask[0] = [10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7]
@@ -504,6 +518,7 @@ class EEG(object):
             myio.sendData(1, "CyKITv2:::Info:::KeyModel:::" + str(self.KeyModel))
             myio.sendData(1, "CyKITv2:::Info:::Delimiter:::" + str(self.Delimiter))
         
+        self.generic = self.myIOinstance.isGeneric()
         
         while self.running:
             if self.myIOinstance.status != True:
@@ -681,11 +696,20 @@ class EEG(object):
                         myio.sendData(1, counter_data + packet_data)
 
                     except Exception, msg:
+                        if str(msg[0]) == "10035":
+                            self.time_delay += .001
+                            time.sleep(self.time_delay)
+                            continue
+                            
                         if msg[0] == 9 or msg[0] == 10053 or msg[0] == 10035:
+                            print str(msg)
                             print "\r\nConnection Closing.\r\n"
                             self.running = False
                             tasks.queue.clear()
-                            myio.onClose(1)
+                            if self.generic == True:
+                                myio.onClose(0)
+                            else:
+                                myio.onClose(1)
                             self.hid.close()
                             self.myIOinstance.stopRecord()
                             continue
