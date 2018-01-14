@@ -23,6 +23,7 @@ import struct
 class socketIO():
     
     def __init__(self, port, uid, ioHandler):
+        self.time_delay = .001
         self.port = port
         self.con = None
         self.isHandleShake = False
@@ -30,12 +31,15 @@ class socketIO():
         self.io = ioHandler
         self.signKey = "ADS#@!D"
         self.online = True
-        
+        self.generic = False
         self.lock = threading.Lock()
         self.thread = threading.Thread(name='ioThread', target=self.run)
         self.thread.setDaemon = False
-
         self.stop_thread = False
+        if uid == 0:
+            self.generic = True
+            self.isHandleShake = True
+            self.isGeneric = True
         
     def start(self):
         self.socketThreadRunning = True
@@ -43,7 +47,6 @@ class socketIO():
             if 'ioThread' == t.getName():
                 return
         self.thread.start()
-        
 
         
     def Handshake(self):
@@ -58,21 +61,38 @@ class socketIO():
         sock.bind(('',self.port))
         sock.listen(100)
         
-        
         try:
             connection,address = sock.accept()
             self.con = connection
             print "> Connected!"
         except:
             print "> Not Connected -" + sock.error
-        
+
         return self.con
             
+
+    def run(self):
         
-    def run(self):       
         self.socketThreadRunning = True
-        while self.socketThreadRunning == True:
         
+        while self.socketThreadRunning == True:
+            
+            if self.generic == True:
+                try:
+                    self.con.setblocking(0)
+                    ready = select.select([self.con], [], [], 1)
+                    if ready[0]:
+                        clientData  = self.con.recv(1024)
+                        self.io.onGeneric(0)
+                    continue
+                except socket.error as e:
+                    if e[0] == 10035:
+                        self.time_delay += .001
+                        time.sleep(self.time_delay)
+                        continue
+                    continue
+            
+                    
             if not self.isHandleShake: 
                 
                 try:
@@ -100,16 +120,13 @@ class socketIO():
                         self.sendData("SETUID")
                         self.io.onConnect(self.uid)
                         continue
-                        
                 except:
-                    
                     continue
                     
             else:
                 try:
                     
                     ready = select.select([self.con], [], [], 0)
-                    
                     if ready[0]:
                         data_head = self.con.recv(1)
                         
@@ -120,7 +137,7 @@ class socketIO():
                         header = struct.unpack("B",data_head)[0]
                         opcode = header & 0b00001111
 
-                        if opcode==8:
+                        if opcode == 8:
                             print "* Closing Connection."
                             self.socketThreadRunning = False
                             self.onClose()
@@ -154,13 +171,17 @@ class socketIO():
                     
                         
                 except Exception, msg:
+                    if msg[0] == 10035:
+                        self.time_delay += .001
+                        time.sleep(self.time_delay)
+                        continue
                     if msg[0] == 9 or msg[0] == 10053:
                         self.socketThreadRunning = False
                     
                     print "CyWebSocket().socketIO() Error: " + str(msg)
                     self.socketThreadRunning = False
                     self.onClose()
-                    print str(msg[0])
+                    
                     return
             
             
@@ -191,22 +212,24 @@ class socketIO():
         
         return data
         
-    def sendData(self,text) :
-        
-        text = self.packData(text)
-        self.con.send(struct.pack("!B",0x81))
-        length = len(text)
+    def sendData(self, text):
+        if self.uid == 0:
+            self.con.send(text + "\r\n")
+        else: 
+            text = self.packData(text)
+            self.con.send(struct.pack("!B",0x81))
+            length = len(text)
 
-        if length<=125:
-            self.con.send(struct.pack("!B",length))
+            if length<=125:
+                self.con.send(struct.pack("!B",length))
 
-        elif length<=65536:
-            self.con.send(struct.pack("!B",126))
-            self.con.send(struct.pack("!H",length))
-        else:
-            self.con.send(struct.pack("!B",127))
-            self.con.send(struct.pack("!Q",length))
+            elif length<=65536:
+                self.con.send(struct.pack("!B",126))
+                self.con.send(struct.pack("!H",length))
+            else:
+                self.con.send(struct.pack("!B",127))
+                self.con.send(struct.pack("!Q",length))
 
-        self.con.send(struct.pack("!%ds"%(length,),text))
+            self.con.send(struct.pack("!%ds"%(length,),text))
         
         
