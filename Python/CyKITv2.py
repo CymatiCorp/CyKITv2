@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 #
-# CyKIT v2 - 2018.Jan.11
-# ==========================
+# CyKIT v2 - 2018.Jan.13
+# ========================
 # Written by Warren
 #
 
@@ -41,6 +41,7 @@ if arg_count == 1 or arg_count > 5 or sys.argv[1] == "help" or sys.argv[1] == "-
     print "  'blankdata'     Injects a single line of encrypted data into the stream that is \r\n"
     print "                   consistent with a blank EEG signal. Counter will report 0. \r\n\r\n"
     print "  'blancsv'       Adds blank channels for each CSV line, to be used with logging.\r\n\r\n"
+    print "  'generic'       Connects to any generic program via TCP. (Can be used with other flags.)\r\n\r\n"
     print "   Join these words together, using a + separator. \r\n"
     print "   (e.g  info+confirm ) \r\n\r\n"
     print " " + "_" * 85 + "\r\n"
@@ -59,30 +60,12 @@ if arg_count < 5:
     if arg_count == 4:
         sys.argv = [sys.argv[0], sys.argv[1], sys.argv[2], sys.argv[3], ""]
    
-        
-"""
-TODO
- 
-  Settings Buttons
-   . Change Epoc+ settings mode.
-  
-  Send openvibe stream (using cyos template)
-  
-  Add Tabs
-  
-  Create CSS
-   
-  Associate checkboxes with drawing data.
-  
-"""
-
 def main(CyINIT):
 
     if 'CyINIT' not in locals():
         #global CyINIT
         CyINIT = 2
    
-
     CyINIT += 1
     HOST = str(sys.argv[1])
     PORT = int(sys.argv[2])
@@ -95,7 +78,11 @@ def main(CyINIT):
         print "> Trying Key Model #: " + str(MODEL)
         
         myi = eeg.MyIO()
-        ioTHREAD = CyWebSocket.socketIO(PORT, 1, myi)
+        
+        if "generic" in sys.argv[4]:
+            ioTHREAD = CyWebSocket.socketIO(PORT, 0, myi)
+        else:
+            ioTHREAD = CyWebSocket.socketIO(PORT, 1, myi)
         myi.setServer(ioTHREAD)
         check_connection = ioTHREAD.Connect()
         cyIO = ioTHREAD.start()
@@ -104,8 +91,7 @@ def main(CyINIT):
             print str(t.getName())
         CyINIT += 1
 
-    # Loop.
-    
+        
     while CyINIT > 2:
         CyINIT += 1
         
@@ -125,10 +111,6 @@ def main(CyINIT):
                 print "*** Reseting . . ."
                 CyINIT = 1
                 main(1)
-            
-        
-        
-
     
 try:
     
