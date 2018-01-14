@@ -1,14 +1,15 @@
 # -*- coding: utf8 -*-
 # 
-# pywebsocketserver  2018.Jan.11
+# pywebsocketserver  2018.Jan.13
 # ================================
 # Written  by suxianbaozi
 #
-# CyWebSocket.py     2018.Jan.11
+# CyWebSocket.py     2018.Jan.13
 # ================================
 # Modified by Warren
 #
-# Python web server for connecting sockets locally with browsers.
+# Python web server for connecting sockets locally with browsers 
+# as well as a generic TCP server.
 #
 
 import sys
