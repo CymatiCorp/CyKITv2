@@ -66,19 +66,18 @@ Features
 --------
 
 * Uses Python threading.
-* Able to connect localy to localhost. (no need for http servers)
+* Able to connect locally to localhost. (no need for http servers)
 * Scrolling
 * Able to make use of EEG data via javascript.
 * EEG graphing.
 * Masking (Advanced feature lets you manipulate data functions in real-time)
+* Streams to any program via TCP stream.
+* EEG logging. Can display in Emotiv programs.
 
 Note: Does not currently stream to openvibe. <br>
-      Only a browser can access this data.
 
 Beta
 ----
-
-Updated 12.23.2017
 
 Gyro Data not yet supported.  <br>
 Depending on the headset, you may be able to view gyros in manual control. <br>
@@ -86,19 +85,6 @@ Epoc+ gyros will not currently be displayed. <br>
 Note: Switching to Gyro-mode may cause EEG to stop displaying.  <br>
 Refresh the browser if this occurs. <br>
 
-Recordings work, however it has not been tested with importing <br>
-to any application, and the headers may need some work. <br>
-
-Todo: <br>
- Fix (All, Counter) buttons. <br>
- Add Gyros. <br>
- Add Game. <br>
- Add Epoc+ Settings change. <br>
- Fix CSV header data. <br>
- Add OpenVIBE support. <br>
- Add Generic TCP layer. <br>
- Fix Misc. visual bugs with scrolling. <br>
- 
 * Feel free to offer comments and suggests via Issues, for further <br>
 information check our Discord server.  Submit new push requests,  <br>
 if you have something to contribute. <br>
