@@ -11,7 +11,7 @@ cyHost = document.getElementById('cyHost').value;
 cyPort = document.getElementById('cyPort').value;
 
 if (cyHost == null) { cyHost = "127.0.0.1"; }
-if (cyPort == null) { cyPort = "15525"; }
+if (cyPort == null) { cyPort = "55555"; }
 
 var client = new CySocketClient(cyHost, cyPort, "CyKITv2");
 
