@@ -1,4 +1,4 @@
-Updated Version (2018.Jan.13) 4:56pm
+Updated Version (2018.Jan.19) 11:00am
 
 Chat Discussion:
 https://discordapp.com/invite/gTYNWc7 <br>
