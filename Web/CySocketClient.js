@@ -12,8 +12,8 @@ function CySocketClient(ip,port,query) {
     this.socket = '';
     this.uid = 0;
     this.sign = '';
-    this.connect = function() {
-        this.socket = new WebSocket('ws://'+ip+':'+port+'/'+query);
+    this.connect = function(myIP, myPORT) {
+        this.socket = new WebSocket('ws://'+myIP+':'+myPORT+'/'+query);
         this.socket.onopen = function() {
             _this.onOpen();
         }
