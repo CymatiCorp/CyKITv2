@@ -119,7 +119,6 @@ function changeFormat(format) {
     }
     client.sendData("CyKITv2:::changeFormat:::" + formatType);
     update_sensorList(headset[selected_model].replace('epoc_plus','epoc'));
-    console.log(formatType);
 }
                     
 function viewChange(model) {
@@ -396,7 +395,6 @@ function modelChange(model) {
     client.onData  = function(text) {
         scroll_screen();
         var eeg_resolution = (document.getElementById("myRange").value * .01);
-        console.log(eeg_resolution);
         var div = document.createElement('div');
         contact = text.split(delimiter);
         var manualControl = document.getElementById("manualControl").checked;
