@@ -1,17 +1,17 @@
 /*
   CyKITv2 
-  CyInterface.js 2018.01.08
+  CyInterface.js 2018.Jan.19
   ===========================
   Written by Warren
   
   CyKITv2 HTML back-end for controlling interface and handling data.
 */
 
-cyHost = document.getElementById('cyHost').value;
-cyPort = document.getElementById('cyPort').value;
+var cyHost = document.getElementById('cyHost').value;
+var cyPort = document.getElementById('cyPort').value;
 
-if (cyHost == null) { cyHost = "127.0.0.1"; }
-if (cyPort == null) { cyPort = "55555"; }
+if (cyHost == null) { var cyHost = "127.0.0.1"; }
+if (cyPort == null) { var cyPort = "55555"; }
 
 var client = new CySocketClient(cyHost, cyPort, "CyKITv2");
 
@@ -131,7 +131,7 @@ function viewChange(model) {
         viewType = "32";
     }
    
-    //console.log(viewType);
+    
 }
             
 function modelChange(model) {
@@ -395,6 +395,7 @@ function modelChange(model) {
     client.onData  = function(text) {
         scroll_screen();
         var eeg_resolution = (document.getElementById("myRange").value * .01);
+        
         var div = document.createElement('div');
         contact = text.split(delimiter);
         var manualControl = document.getElementById("manualControl").checked;
@@ -807,7 +808,14 @@ document.getElementById('cyStopRecord').onclick = function(e) {
 
 // Connect Button.
 document.getElementById('cyConnect').onclick = function(e) {
-    client.connect();
+
+    var cyHost = document.getElementById('cyHost').value;
+    var cyPort = document.getElementById('cyPort').value;
+
+    if (cyHost == null) { var cyHost = "127.0.0.1"; }
+    if (cyPort == null) { var cyPort = "55555"; }
+
+    client.connect(cyHost, cyPort);
 }
 
 document.getElementById('CySample').onclick = function(e) {
