@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 #
-# CyKIT v2 - 2018.Jan.13
+# CyKIT v2 - 2018.Jan.22
 # ========================
 # Emokit Written by Cody Brocious
 # Emokit Written by Kyle Machulis
@@ -18,12 +18,18 @@ import platform
 import socket
 import operator
 import math
-import pywinusb.hid as hid
 from Queue import Queue
+import threading
+
+# Import local package: (pywinusb 0.2.9)
+sys.path.insert(0, './cyUSB')
+import cyUSB as hid
+#import pywinusb.hid as hid
+
+# Import local package: (pycrypto 2.6.1)
 from Crypto.Cipher import AES
 from Crypto import Random
-import threading
-        
+
 DEVICE_POLL_INTERVAL = 0.001  # in seconds
 
 tasks = Queue()
