@@ -1,12 +1,12 @@
+<img src="./git-Images/CyKITv2.png" width=25% height=25% ><br>
 Updated Version (2018.Jan.22) 1:50pm
 
+
 Chat Discussion:
-https://discordapp.com/invite/gTYNWc7 <br>
+https://discordapp.com/invite/gTYNWc7
 (Do not need discord app, just click for browser chat)
 
-<img src="./git-Images/CyKITv2.png" width=25% height=25% ><br>
-CyKit 2.0 (2018.Jan.19) for Python 2.7.6 (Windows)
-
+CyKit 2.0 for Python 2.7.6 (Windows) <br>
 Python Data Controller for Neural EEG headsets.
 
 Description
