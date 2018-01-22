@@ -17,17 +17,12 @@ Works with Chrome and Firefox.
 <img src="./git-Images/CyKITpreview.png" width=70% height=70% ><br><br>
 <img src="http://cymaticorp.com/edu/CyKITv2-/CyKITv2-example.png" width=70% height=70% ><br>
 
-Dependencies
-------------
-* pywinusb 0.4.2 --- https://pypi.python.org/pypi/pywinusb/  <br>
-* pycrypto 2.6.1 --- https://pypi.python.org/pypi/pycrypto/2.6.1
-
-
 Installation
 ------------
 * Install Python 2.7.6
 
-(Crypto and pywinusb are now included. No additional installations necessary)
+(pycrypto 2.6.1 and <br>
+ pywinusb 0.2.9 are now included. No additional installations necessary)
 
 
 Usage
