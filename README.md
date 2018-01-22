@@ -1,4 +1,4 @@
-Updated Version (2018.Jan.22) 1:30pm
+Updated Version (2018.Jan.22) 1:50pm
 
 Chat Discussion:
 https://discordapp.com/invite/gTYNWc7 <br>
@@ -21,9 +21,10 @@ Installation
 ------------
 * Install Python 2.7.6
 
-(pycrypto 2.6.1 and <br>
- pywinusb 0.2.9 are now included. No additional installations necessary)
-
+```
+pycrypto 2.6.1 and pywinusb 0.4.1 are now included.  
+(No additional installation files necessary.)
+```
 
 Usage
 -----
