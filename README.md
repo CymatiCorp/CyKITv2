@@ -31,6 +31,8 @@ Usage
 -----
 
 <img src="./git-Images/helpFile.png" width=70% height=70% ><br>
+
+```
 example 1.
 python.exe CyKITv2.py 127.0.0.1 18675 2
 
@@ -39,7 +41,7 @@ python.exe CyKITv2.py 127.0.0.1 15309 4 info
 
 example 3.
 python.exe CyKITv2.py 127.0.0.1 12991 6 info+confirm
-
+```
 
 * Open a browser. (Firefox/Chrome)
 * Open Web Document in project: /Web/CyKITv2.html
