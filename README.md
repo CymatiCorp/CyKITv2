@@ -22,8 +22,9 @@ Installation
 * Install Python 2.7.6
 
 ```
-pycrypto 2.6.1 and pywinusb 0.4.1 are now included.  
-(No additional installation files necessary.)
+pycrypto 2.6.1 and pywinusb 0.4.1 are now included into this repository.
+(No installation necessary. Simply extract this repository to a folder and run.
+see below for usage details.)
 ```
 
 Usage
