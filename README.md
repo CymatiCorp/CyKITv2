@@ -1,4 +1,4 @@
-Updated Version (2018.Jan.19) 11:00am
+Updated Version (2018.Jan.22) 1:30pm
 
 Chat Discussion:
 https://discordapp.com/invite/gTYNWc7 <br>
@@ -26,9 +26,9 @@ Dependencies
 Installation
 ------------
 * Install Python 2.7.6
-* Install pycrypto
-* Extract pywinusb-0.4.2
-* Copy pywinusb/ folder to Python27\Lib\site-packages\
+
+(Crypto and pywinusb are now included. No additional installations necessary)
+
 
 Usage
 -----
