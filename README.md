@@ -6,7 +6,7 @@ Chat Discussion:
 https://discordapp.com/invite/gTYNWc7 <br>
 (Do not need discord app, just click for browser chat)
 
-CyKit 2.0 for Python 2.7.6 (Windows) <br>
+CyKit 2.0 for Python 2.7.6 (32-bit) (Windows) <br>
 Python Data Controller for Neural EEG headsets.
 
 Description
