@@ -17,12 +17,14 @@ Works with Chrome and Firefox.
 <img src="./git-Images/CyKITpreview.png" width=70% height=70% ><br><br>
 <img src="http://cymaticorp.com/edu/CyKITv2-/CyKITv2-example.png" width=70% height=70% ><br>
 
-Installation
+Requirements
 ------------
-* Install Python 2.7.6
+* Windows
+* Python 2.7.6
+* 32-bit version of Python
 
 ```
-pycrypto 2.6.1 and pywinusb 0.4.1 are now included into this repository.
+pycrypto 2.6.1 (32-bit) and pywinusb 0.4.1 are now included into this repository.
 (No installation necessary. Simply extract this repository to a folder and run.
 see below for usage details.)
 ```
