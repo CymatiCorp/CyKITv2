@@ -48,6 +48,8 @@ __revision__ = "$Id$"
 import sys
 from Crypto.Cipher import blockalgo
 from Crypto.Cipher import _AES
+#DLL import error for _AES.pyd 
+#Only on 64-bit systems. Requires 32-bit python install.
 
 class AESCipher (blockalgo.BlockAlgo):
     """AES cipher object"""
