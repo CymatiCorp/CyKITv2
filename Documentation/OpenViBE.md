@@ -12,11 +12,8 @@ capable of floating point data, do not include the `integer` flag.
 
 * Install OpenViBE - http://openvibe.inria.fr/downloads/
 
-* Start Acquisition Server.
 
-* Start OpenViBE Designer.
-
-[ Optional Step ]
+`[ Optional Step ] `
 If you require openvibe to read 1 sample at a time. Apply this patch.
 
 * Open C:\Program files\OpenViBE\share\openvibe\applications\acquisition-server\interface.ui
@@ -25,6 +22,11 @@ Navigate to line 53 and edit the '4' digit, to a '1'
  like so:
        <col id="0" translatable="yes">1</col> 
 ```
+
+
+* Start Acquisition Server.
+
+* Start OpenViBE Designer.
 
 Edit Acquisition Server preferences with the following parameters.
 
