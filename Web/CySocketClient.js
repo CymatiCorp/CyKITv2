@@ -1,6 +1,6 @@
 /*
   CyKITv2 
-  Cy.SocketClient.js 2018.Jan.19
+  Cy.SocketClient.js 2018.Jan.29
   ===============================
   Written by Warren
   
