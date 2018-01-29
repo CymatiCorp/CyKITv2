@@ -13,8 +13,8 @@ capable of floating point data, do not include the `integer` flag.
 * Install OpenViBE - http://openvibe.inria.fr/downloads/
 
 
-`[ Optional Step ] `
-If you require openvibe to read 1 sample at a time. Apply this patch.
+`[ Optional Step ] ` <br>
+If you require openvibe to read 1 sample at a time. Apply this patch:
 
 * Open C:\Program files\OpenViBE\share\openvibe\applications\acquisition-server\interface.ui
 ```
