@@ -34,7 +34,7 @@ Edit Acquisition Server preferences with the following parameters.
      * `Number of channels`: `14`
      * `Sampling frequency`: `128` -- For Epoc+ try changing to 256 
      * `Telnet host name`: `localhost`
-     * `Telnet host port`: `5555` - Connects to CyKit Port.
+     * `Telnet host port`: `5555` - Connects to CyKITv2 Port.
      * `Endianness`: `Big endian`
      * `Sample type`: `16 bits SIGNED integer` - (Requires 'integer' flag in CyKITv2.) 
      * `Skip at start (bytes)`: `0`
