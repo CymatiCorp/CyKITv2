@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 #
-# CyKIT v2 - 2018.Jan.22
+# CyKIT v2 - 2018.Jan.29
 # ========================
 # Emokit Written by Cody Brocious
 # Emokit Written by Kyle Machulis
@@ -16,6 +16,7 @@ import os
 import sys
 import platform
 import socket
+import struct
 import operator
 import math
 from Queue import Queue
@@ -37,6 +38,11 @@ tasks = Queue()
 class MyIO():
     
     def __init__(self):
+        self.integerType = False
+        self.noheader = False
+        self.ovDelay = 100
+        self.ovSamples = 4
+        self.openvibe = False
         self.generic = False
         self.format = 0;
         self.update_epoc = None
@@ -161,17 +167,93 @@ class MyIO():
     def onConnect(self, uid):
         self.status = True
         self.newMask = None
+        if self.openvibe == True:
+            return
+        if self.noheader == True:
+            return
         self.server.sendData("CyKITv2:::Connected")
         return
+    
+    def setOVSamples (self, samples):
+        self.ovSamples = int(samples)
+        print "OpenVibe Samples: " + str(samples)
+        return
+    
+    def getOVSamples(self):
+        return self.ovSamples
+        
+    def setInteger(self, state):
+        self.integerType = state
+        if state == True: 
+            print "Data Type: Integer"
+        else:
+            print "Data Type: Float"
+        return
+    
+    def getInteger(self):
+        return self.integerType
+        
+    def setHeader(self, state):
+        self.noheader = state
+        if state == True:
+            print "Header: Disabled"
+        else:
+            print "Header: Enabled"
+        return
+    
+    def getHeader(self):
+        return self.noheader
+        
+    def setGeneric(self, state):
+        self.generic = state
+        if state == True:
+            print "Generic: Enabled"
+        else:
+            print "Generic: Disabled"
+        return
+    
+    def getOVDelay(self):
+        return int(self.ovDelay)
+    
+    def setOVDelay(self, delay):
+        self.ovDelay = (int(delay) * 100)
+        print "OpenVibe Delay: " + str(self.ovDelay)
+        return
+
+    def setOpenvibe(self, state):
+        self.openvibe = state
+        if state == True:
+            print "OpenVibe: Enabled"
+        if state == False:
+            print "OpenVibe: Disabled"
+        return        
+        
+    def getOpenvibe(self):
+        return self.openvibe
+    
     
     def onGeneric(self, uid):
         self.status = True
         self.generic = True
+        if self.openvibe == True:
+            return
+        if self.noheader == True:
+            return
         self.server.sendData("CyKITv2:::Connected")
         return
     
-    def sendData(self, uid, text):
-        self.server.sendData(text)
+    def sendOVint(self, data):
+        self.server.sendOVint(data)
+        return
+    
+    def sendOVfloat(self, data):
+        self.server.sendOVfloat(data)
+        return
+    
+    def sendData(self, uid, data):
+        if self.openvibe == True:
+            return
+        self.server.sendData(data)
         return      
         
     def status(self):
@@ -316,6 +398,8 @@ class EEG(object):
         self.channels = 40
         self.blankCSV = False
         self.generic = False
+        self.openvibe = False
+        self.integerType = False
         
         self.mask = {}
         self.mask[0] = [10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7]
@@ -348,11 +432,37 @@ class EEG(object):
         if "baseline" in config:      self.baseline = True
         else:                         self.baseline = False
         
+        if "noheader" in config:      self.noheader = True
+        else:                         self.noheader = False
+                        
+        if "integer" in config:       self.integerType = True
+        else:                         self.integerType = False
+                
         if "outputdata" in config:    self.outputData = True
         else:                         self.outputData = False
         
+        if "generic" in config:       self.generic = True
+        else:                         self.generic = False
+        
+        if "openvibe" in config:      self.openvibe = True
+        else:                         self.openvibe = False
+        
         if "outputencrypt" in config: self.outputEncrypt = True
         else:                         self.outputEncrypt = False
+        
+        if "ovdelay" in config:      
+            myDelay = str(config).split("ovdelay:")
+            self.ovDelay = myDelay[1][:3]
+        else:                        
+            self.ovDelay = 100
+            
+        if "ovsamples" in config:      
+            mySamples = str(config).split("ovsamples:")
+            self.ovSamples = int(mySamples[1][:3])
+            if self.ovSamples > 512:
+                self.ovSamples = 512
+        else:                        
+            self.ovSamples = 4
         
         if "format" in config:     
             myFormat = str(config).split("format-")
@@ -361,7 +471,13 @@ class EEG(object):
             self.format = 0
             
         print "Format: " + str(self.format)
+        self.myIOinstance.setOVSamples(self.ovSamples)
+        self.myIOinstance.setOVDelay(self.ovDelay)
+        self.myIOinstance.setInteger(self.integerType)
         self.myIOinstance.formatChange(self.format)
+        self.myIOinstance.setHeader(self.noheader)
+        self.myIOinstance.setGeneric(self.generic)
+        self.myIOinstance.setOpenvibe(self.openvibe)
         
     def start(self):
         for t in threading.enumerate():
@@ -493,6 +609,8 @@ class EEG(object):
     def convertEPOC_PLUS(self, value_1, value_2):
         
         edk_value = "%.8f" % (((int(value_1) * .128205128205129) + 4201.02564096001) + ((int(value_2) -128) * 32.82051289))
+        if self.integerType == True:
+            return str(int(float(edk_value)))
         #edk_value = "%.6f" % (((int(value_2) * .128205148) + 4201.02564096001) + ((int(value_1) -128) * 32.82051286))
         return edk_value
          
@@ -518,18 +636,20 @@ class EEG(object):
         
         self.Delimiter = str(self.myIOinstance.getDelimiter())
         
-        if self.myIOinstance.status == True:
-            myio.sendData(1, "CyKITv2:::Info:::Device:::" + str(self.hid.product_name))
-            myio.sendData(1, "CyKITv2:::Info:::Serial:::" + str(self.hid.serial_number))
-            myio.sendData(1, "CyKITv2:::Info:::KeyModel:::" + str(self.KeyModel))
-            myio.sendData(1, "CyKITv2:::Info:::Delimiter:::" + str(self.Delimiter))
-        
+
+        if self.myIOinstance.getHeader() == False:
+            if self.myIOinstance.status == True:
+                myio.sendData(1, "CyKITv2:::Info:::Device:::" + str(self.hid.product_name))
+                myio.sendData(1, "CyKITv2:::Info:::Serial:::" + str(self.hid.serial_number))
+                myio.sendData(1, "CyKITv2:::Info:::KeyModel:::" + str(self.KeyModel))
+                myio.sendData(1, "CyKITv2:::Info:::Delimiter:::" + str(self.Delimiter))
+            
         self.generic = self.myIOinstance.isGeneric()
         
         while self.running:
             if self.myIOinstance.status != True:
                 return
-
+            
             if self.myIOinstance.update_epoc_settings(0) != None:
                 try:
                     EPOC_ChangeMode = self.myIOinstance.update_epoc_settings(0)
@@ -696,10 +816,18 @@ class EEG(object):
                                     print str(counter_data + packet_data)
                         
                         #openvibe
-                        #cy = struct.pack('>' + str(len(values)) + 'h',*values)
+                        #cy = struct.pack('>' + str(len(values)) + 'f', *packet_data)
                         
                     try:
-                        myio.sendData(1, counter_data + packet_data)
+                        if self.openvibe == True:
+                            if self.integerType == True:
+                                myio.sendOVint(packet_data)
+                            else:
+                                myio.sendOVfloat(packet_data)
+                            
+                        else:
+                            myio.sendData(1, counter_data + packet_data)
+                        
 
                     except Exception, msg:
                         if str(msg[0]) == "10035":
@@ -707,7 +835,7 @@ class EEG(object):
                             time.sleep(self.time_delay)
                             continue
                             
-                        if msg[0] == 9 or msg[0] == 10053 or msg[0] == 10035:
+                        if msg[0] == 9 or msg[0] == 10053 or msg[0] == 10035 or msg[0] == 10054:
                             print str(msg)
                             print "\r\nConnection Closing.\r\n"
                             self.running = False
@@ -719,7 +847,7 @@ class EEG(object):
                             self.hid.close()
                             self.myIOinstance.stopRecord()
                             continue
-                        print "eeg().run() sendData() Error: " + str(msg)
+                        print "eeg().run() Error: " + str(msg)
 
                 except Exception, exception2:
                     print str(exception2)
