@@ -1,10 +1,10 @@
 # -*- coding: utf8 -*-
 # 
-# pywebsocketserver  2018.Jan.13
+# pywebsocketserver  2018.Jan.29
 # ================================
 # Written  by suxianbaozi
 #
-# CyWebSocket.py     2018.Jan.13
+# CyWebSocket.py     2018.Jan.29
 # ================================
 # Modified by Warren
 #
@@ -25,6 +25,8 @@ class socketIO():
     
     def __init__(self, port, uid, ioHandler):
         self.time_delay = .001
+        self.openvibe = False
+        self.ovDelay = 100
         self.port = port
         self.con = None
         self.isHandleShake = False
@@ -37,6 +39,9 @@ class socketIO():
         self.thread = threading.Thread(name='ioThread', target=self.run)
         self.thread.setDaemon = False
         self.stop_thread = False
+        self.ovData = ""
+        self.ovSamples = 4
+        
         if uid == 0:
             self.generic = True
             self.isHandleShake = True
@@ -60,7 +65,7 @@ class socketIO():
         sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(('',self.port))
-        sock.listen(100)
+        sock.listen(1)
         
         try:
             connection,address = sock.accept()
@@ -68,15 +73,26 @@ class socketIO():
             print "> Connected!"
         except:
             print "> Not Connected -" + sock.error
-
+        
         return self.con
             
 
     def run(self):
-        
+            
         self.socketThreadRunning = True
         
+        if self.io.getOpenvibe() == True:
+                self.io.onGeneric(0)
+                self.ovDelay = self.io.getOVDelay()
+                self.ovSamples = self.io.getOVSamples()
+                
         while self.socketThreadRunning == True:
+            
+            if self.io.getOpenvibe() == True:
+                self.openvibeTimer = 0
+                while self.openvibeTimer > self.ovDelay:
+                    self.openvibeTimer += 1
+                return
             
             if self.generic == True:
                 try:
@@ -85,8 +101,13 @@ class socketIO():
                     if ready[0]:
                         clientData  = self.con.recv(1024)
                         self.io.onGeneric(0)
+                        if self.io.getOpenvibe() == True:
+                            self.openvibe = True
+                        continue
+                        
                     continue
                 except socket.error as e:
+                    print str(socket.error)
                     if e[0] == 10035:
                         self.time_delay += .001
                         time.sleep(self.time_delay)
@@ -95,7 +116,7 @@ class socketIO():
             
                     
             if not self.isHandleShake: 
-                
+                print "trying this!"
                 try:
                     self.con.setblocking(0)
                     ready = select.select([self.con], [], [], 1)
@@ -176,7 +197,7 @@ class socketIO():
                         self.time_delay += .001
                         time.sleep(self.time_delay)
                         continue
-                    if msg[0] == 9 or msg[0] == 10053:
+                    if msg[0] == 9 or msg[0] == 10053 or msg[0] == 10054:
                         self.socketThreadRunning = False
                     
                     print "CyWebSocket().socketIO() Error: " + str(msg)
@@ -210,9 +231,31 @@ class socketIO():
     def packData(self,text):
         sign = hashlib.new("md5",str(self.uid)+self.signKey).hexdigest()
         data = '%s<split>%s<split>%s'%(self.uid,sign,text)
-        
         return data
+    
+    def sendOVint(self, text):
+        if len(self.ovData) >= (self.ovSamples *28):
+            self.con.sendall(self.ovData)
+            self.ovData = ""
+            
+        ov_split = str(text).split(", ")
+        #ov_floats = map((lambda x: float("%.11f" % float(x))), ov_split)
+        ov_ints = map(lambda x: int(float(x)), ov_split)
+        self.ovData = struct.pack('>' + ('h' * len(ov_ints)), *ov_ints)
+
+        self.con.sendall(self.ovData)
+    
+    def sendOVfloat(self, text):
+        if len(self.ovData) >= (self.ovSamples *56):
+            self.con.sendall(self.ovData)
+            self.ovData = ""
+            
+        ov_split = str(text).split(", ")
+        #ov_floats = map((lambda x: float("%.11f" % float(x))), ov_split)
+        ov_floats = map(lambda x: float(x), ov_split)
+        self.ovData += struct.pack('>' + ('f' * len(ov_floats)), *ov_floats)
         
+    
     def sendData(self, text):
         if self.uid == 0:
             self.con.send(text + "\r\n")
