@@ -1,11 +1,14 @@
 <!-- 
-    CyKITv2 2017.Jan.22
-    ===================== 
-    Written by Warren
+
+     CyKITv2
+     CyKITv2.html 2018.Feb.06
+    ===========================
+     Written by Warren
     
-    HTML Main Access.
+     HTML Access for CyKITv2.py
 
 -->
+
 <html>
     <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -14,11 +17,11 @@
     <link rel="stylesheet" type="text/css" href="./cyCSS.css"> 
     <script src="CySocketClient.js"></script>
     </head>
-    <img src="./images/graph.png" id="graphImage" width="25px" height="50px" style="position:absolute; visibility:hidden; background-size: 25px 50px; " />
-    <body style="background:black;" >   
-        <div id = "connectBar" style="position:absolute; background-color:#777777; width:100%; height:100px; background-image:url('./images/blue-bg.png'); background-size:100% 100%;  background-repeat: no-repeat;" > 
-            <div id="innerBar" style="margin-left:21%; margin-top:1%; color:white; background: rgba(0,0,0,0.3); min-width:300px;  max-width:400px; border-radius: 10px; width:30%; ">
-              <div style="position:relative; left:15px; top:8px;">
+    <img src="./images/graph.png" id="graphImage" width="25px" height="50px"  />
+    <body style="background:black;">
+        <div id = "connectBar"> 
+            <div id="innerBar">
+              <div id="hostPort">
                 Host <input id="cyHost" type="text" value="127.0.0.1" /> 
                 Port <input id="cyPort" type="text" maxlength="5" size="5" value="55555"/> 
                 <div style="margin-top:12px; left:4%;">
@@ -31,14 +34,14 @@
         
         
         
-        <div id="CyKIT-picture" style="position:absolute; left:2%; top:2%; width:20%; height:100%; background-image:url('./images/CyKITv2-bg-off.png'); background-size:200px 70px;  background-repeat: no-repeat;"> 
+        <div id="CyKIT-picture"> 
         
         </div>
-        <div id="leftPanel" style="position:absolute; background-color:black; top:109px; width:20%; height:100%; color:white; font-family: segoe ui;">
-            <div style ="position:absolute; width:100%; height:100%; background-image:url('./images/gloss.png'); background-size:100% 100%;  background-repeat: no-repeat;">
-                <div id="innerLeftPanel" style="position:relative; left: 3%; height:25%; opacity:.7; width: 70%; max-height:150px;" ;>
-                    Status: <label id="CyStatus" style="color:#aaaaaa;">Not Connected.</label> <br><br>
-                    Controller: <label id="CyHeadset" style="color:#aaaaaa;">None.</label> <br><br>
+        <div id="leftPanel">
+            <div id="glossy">
+                <div id="innerLeftPanel" >
+                    Status: <label id="CyStatus">Not Connected.</label> <br><br>
+                    Controller: <label id="CyHeadset">None.</label> <br><br>
                     View Type: &nbsp <select id="CyView" onchange="viewChange(this)">
                         <option id="Data">EEG</option>
                         <option id="Gyro">Gyro</option>
@@ -59,7 +62,10 @@
                     </div>
                     EEG Resolution: <br><br>
                     <div class="eeg_resolution">
-                        <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                        <div class="tooltip">
+                        <input id="myRange" type="range" min="1" max="100" value="50" class="slider" oninput="changeSlider(this.value)">
+                            <label id="CyRes" class="tooltiptext" style="position:relative; margin-left: 30px; top: -50px;" > &nbsp&nbsp 50 % &nbsp&nbsp</label>
+                        </div>
                     </div>
                     <!---
                     Model: <select id="CyModel" onchange="modelChange(this)">
@@ -76,14 +82,12 @@
                     
                     <br><br>
 
-                    <div style="position:absolute; left:1%; width:110%; height:125%; opacity:.9; background-color:#555555; border-radius: 10px; color:#ababab; font-size:12;">
-                        <div style="margin-left:10px; margin-top:10px;">
-                            USB Name: <label style="color:#aaaaaa;" id="CyDevice">0</label> <br><br>
-                            USB Serial: <label style="color:#aaaaaa;" id="CySerial">0</label> <br><br>
-                            Key Model #: <label style="color:#aaaaaa;" id="CyKeyModel">0</label> <br><br>
-                            
-                            Battery Level: <label style="color:#aaaaaa;" id="CyBattery">0</label> <br><br>
-                            
+                    <div id="cyInfo">
+                        <div id="cyInfoText">
+                            USB Name: <label id="CyDevice">0</label> <br><br>
+                            USB Serial: <label id="CySerial">0</label> <br><br>
+                            Key Model #: <label id="CyKeyModel">0</label> <br><br>
+                            Battery Level: <label id="CyBattery">0</label> <br><br>
                         </div>
                     </div>
                 </div>
@@ -97,11 +101,11 @@
             <button class="w3-bar-item w3-button w3-hover-blue" onclick="openTab('Game')">Game</button>
         </div>
         <div id="EEG" class="tabs">
-            <div id="canvasPane" style="position:relative; background-image: url('./images/graph.png'); background-size: 25px 50px; left:20%; top:150px; height:60%;  width:78%; border-radius:5px; border: 2px solid #aaa; ">
+            <div id="canvasPane">
 
-                <canvas id="cyCanvas" style="position:relative; height:100%;"></canvas>
-                <div id="manualSelection" style="visibility:visible; overflow:hidden;">
-                    <div id="select.Epoc" style="position:relative; left:0%; top:10px; width:80%; height: 20%; color:white; visibility: hidden;">
+                <canvas id="cyCanvas"></canvas>
+                <div id="manualSelection">
+                    <div id="selectEpocSensor">
                         <form action="">
                             <input id="e.ALL" type="checkbox" checked>(ALL)</input> &nbsp
                             <input id="e.COUNTER" type="checkbox" checked>COUNTER</input> &nbsp <br><br>
@@ -122,7 +126,7 @@
                         </form>
                     </div>
                     <br>
-                    <div id="select.Insight" style="position:relative; left:0%; top:-67px; width:80%; height: 20%; color:white; visibility: hidden;">
+                    <div id="selectInsightSensor">
                         <form action="">
                             <input id="i.AF3" type="checkbox" checked>AF3</input> &nbsp
                             <input id="i.T7" type="checkbox" checked>T7</input> &nbsp &nbsp
@@ -133,7 +137,7 @@
                     </div>
                 </div>
             </div>
-         <div id="maskView" style="position:absolute; left:50%; top:10px; z-index:1; visibility:hidden;">
+         <div id="maskView">
          <font color="White">Mask</font> <select id="CyMask" style="visibility: hidden;">
                         <option id="0">0</option>
                         <option id="1">1</option>
@@ -160,21 +164,21 @@
            
                 
         <div id="Settings" class="tabs" style="display:none;">
-            <form action="" style="position:relative; background-color:#232323; left:20%; top:150px; height:60%;  width:78%; border-radius:5px; border: 2px solid #aaa; ">>
-                <div style="position:relative; top:20px;  margin-left:52px;">
-                    <label style="color:#aaaaaa;">Mode:</label> &nbsp
+            <form id="settingsForm" action="">
+                <div id="settingsFormText">
+                    <label>Mode:</label> &nbsp
                     <select id="CyMode">
                         <option id="mode-EPOC">Epoc</option>
                         <option id="mode-EPOC_PLUS">Epoc+</option>
                     </select> <br><br>
                     
-                    <label style="color:#aaaaaa;">Data Sample Rate:</label> &nbsp
+                    <label>Data Sample Rate:</label> &nbsp
                     <select id="CySample">
                         <option id="mode-EPOC">128 Hz (samples a second)</option>
                         <option id="mode-EPOC_PLUS">256 Hz (samples a second)</option>
                     </select> <br><br>
                     
-                    <label style="color:#aaaaaa;">Gyro Sample Rate:</label> &nbsp
+                    <label>Gyro Sample Rate:</label> &nbsp
                     <select id="CyGyro">
                         <option id="mode-EPOC">OFF</option>
                         <option id="mode-EPOC">32 Hz</option>
@@ -188,22 +192,22 @@
             </form>
         </div>
         <div id="Recording" class="tabs" style="display:none;">
-            <form action="" style="position:relative; background-color:#232323; left:20%; top:150px; height:60%;  width:78%; border-radius:5px; border: 2px solid #aaa; ">>
+            <form id="recordingForm" action="">
                 <div style="position:relative; top:20px;  margin-left:52px;">
                     <label style="color:#aaaaaa;">Filename</label> 
-                    <input id="cyRecordFile" type="text" style="width:20%" value="EEG_recording_" ></input> <br><br>
+                    <input id="cyRecordFile" type="text" style="width:35%" value="EEG_recording_" ></input> <br><br>
                     <input id="cyStartRecord" class="w3-bar-item w3-black  w3-hover-blue" type="button" value="Record"></input> &nbsp&nbsp
                     <input id="cyStopRecord" class="w3-bar-item w3-black  w3-hover-blue" type="button" value="Stop" /></input>
                 </div>
             </form>
         </div>
         <div id="Gyro" class="tabs" style="display:none;">
-            <div id="gyroPane" style="position:relative; background-color:#ffffff; left:20%; top:150px; height:60%;  width:78%; border-radius:5px; border: 2px solid #aaa; ">
-                <canvas id="gyroCanvas" style="position:relative; height:100%;"></canvas>
+            <div id="gyroPane">
+                <canvas id="gyroCanvas"></canvas>
             </div>
         </div>
         <div id="Game" class="tabs" style="display:none;">
-            <div id="gamePane" style="position:relative; background-color:#ffffff; left:20%; top:150px; height:60%;  width:78%; border-radius:5px; border: 2px solid #aaa; ">
+            <div id="gamePane">
             </div>
         </div>
                 
