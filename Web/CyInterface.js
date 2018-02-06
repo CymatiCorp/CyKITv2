@@ -1,11 +1,13 @@
 /*
-  CyKITv2 
-  CyInterface.js 2018.Jan.19
-  ===========================
-  Written by Warren
+
+  CyKITv2
+  CyInterface.js 2018.Feb.06
+  ============================
+   Written by Warren
   
-  CyKITv2 HTML back-end for controlling interface and handling data.
-*/
+   CyKITv2 HTML back-end for controlling interface and handling data.
+
+ */
 
 var cyHost = document.getElementById('cyHost').value;
 var cyPort = document.getElementById('cyPort').value;
@@ -108,6 +110,11 @@ function openTab(tabName) {
     
 }
 
+function changeSlider(info) {
+    var eegRes = document.getElementById("CyRes");
+    eegRes.innerHTML = "&nbsp&nbsp" + info + " %&nbsp&nbsp";
+    console.log(info);
+}
 function changeFormat(format) {
     var CyFormat = document.getElementById("CyFormat").value;
     
@@ -328,6 +335,9 @@ function modelChange(model) {
                 }
             }
             if (newCmd[1] == "Info") {
+                if (newCmd[2] == "Config") {
+                    console.log(newCmd[3])
+                }
                 if (newCmd[2] == "Delimiter") {
                     delimiter = newCmd[3]
                 }
