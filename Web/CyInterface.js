@@ -113,7 +113,6 @@ function openTab(tabName) {
 function changeSlider(info) {
     var eegRes = document.getElementById("CyRes");
     eegRes.innerHTML = "&nbsp&nbsp" + info + " %&nbsp&nbsp";
-    console.log(info);
 }
 function changeFormat(format) {
     var CyFormat = document.getElementById("CyFormat").value;
