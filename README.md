@@ -1,4 +1,4 @@
-<img src="./git-Images/CyKITv2.png" width=25% height=25% ><br>
+<img src="https://github.com/CymatiCorp/CyKITv2/blob/gitImages/git-Images/CyKITv2.png" width=25% height=25% ><br>
 Updated Version (2018.Feb.06) 2:32pm
 
 
@@ -14,8 +14,7 @@ Description
 Streams EEG data to a browser for data handling.
 Works with Chrome and Firefox.
 
-<img src="./git-Images/CyKITpreview.png" width=70% height=70% ><br><br>
-<img src="http://cymaticorp.com/edu/CyKITv2-/CyKITv2-example.png" width=70% height=70% ><br>
+<img src="https://github.com/CymatiCorp/CyKITv2/blob/gitImages/git-Images/CyKITpreview.png" width=70% height=70% ><br><br>
 
 Requirements
 ------------
@@ -32,7 +31,7 @@ see below for usage details.)
 Usage
 -----
 
-<img src="./git-Images/helpFile.png" width=70% height=70% ><br>
+<img src="https://github.com/CymatiCorp/CyKITv2/blob/gitImages/git-Images/helpFile.png" width=70% height=70% ><br>
 
 ```
 example 1.
@@ -77,12 +76,15 @@ Features
 
 Note: Does not currently stream to openvibe. <br>
 
+Documentation
+-------------
+![Bluetooth Development](https://github.com/CymatiCorp/CyKITv2/blob/gitImages/Documentation/Bluetooth_Development-Epoc.pdf)
+![OpenViBE Setup](https://github.com/CymatiCorp/CyKITv2/blob/gitImages/Documentation/OpenViBE.md)
+
 Beta
 ----
 
-Gyro Data not yet supported.  <br>
-Depending on the headset, you may be able to view gyros in manual control. <br>
-Epoc+ gyros will not currently be displayed. <br>
+Gyro Data --- Coming Soon.  <br><br>
 Note: Switching to Gyro-mode may cause EEG to stop displaying.  <br>
 Refresh the browser if this occurs. <br>
 
