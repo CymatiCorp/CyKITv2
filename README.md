@@ -78,7 +78,7 @@ Note: Does not currently stream to openvibe. <br>
 
 Documentation
 -------------
-![Bluetooth Development](https://github.com/CymatiCorp/CyKITv2/blob/gitImages/Documentation/Bluetooth_Development-Epoc.pdf)
+![Bluetooth Development](https://github.com/CymatiCorp/CyKITv2/blob/gitImages/Documentation/Bluetooth_Development-Epoc.pdf) <br>
 ![OpenViBE Setup](https://github.com/CymatiCorp/CyKITv2/blob/gitImages/Documentation/OpenViBE.md)
 
 Beta
