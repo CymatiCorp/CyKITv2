@@ -51,14 +51,14 @@ python.exe CyKITv2.py 127.0.0.1 12991 6 info+confirm
 
 Optional Flags
 --------------
-<img src="./git-Images/help1.png" width=40% height=40% ><br>
+<img src="https://github.com/CymatiCorp/CyKITv2/blob/gitImages/git-Images/help1.png" width=40% height=40% ><br>
 'confirm' flag enabled, lets you manually confirm what device to use.
 
-<img src="./git-Images/help2.png" width=70% height=70% ><br>
+<img src="https://github.com/CymatiCorp/CyKITv2/blob/gitImages/git-Images/help2.png" width=70% height=70% ><br>
 'info' flag enabled. View additional product information about your
 usb devices.
 
-<img src="./git-Images/help4.png" width=70% height=70% ><br>
+<img src="https://github.com/CymatiCorp/CyKITv2/blob/gitImages/git-Images/help4.png" width=70% height=70% ><br>
 'nocounter' flag enabled. The first 2 bytes (and delimiters) are not included<br>
 in the output data. May be useful for formatting data for other applications.
 
