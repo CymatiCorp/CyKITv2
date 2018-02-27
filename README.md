@@ -28,6 +28,7 @@ pycrypto 2.6.1 (32-bit) and pywinusb 0.4.1 are now included into this repository
 see below for usage details.)
 ```
 
+
 Usage
 -----
 
@@ -49,6 +50,7 @@ python.exe CyKITv2.py 127.0.0.1 12991 6 info+confirm
 * Enter localhost and listen port used to run CyKITv2.py
 * Press "Connect"
 
+
 Optional Flags
 --------------
 <img src="https://github.com/CymatiCorp/CyKITv2/blob/gitImages/git-Images/help1.png" width=40% height=40% ><br>
@@ -61,6 +63,7 @@ usb devices.
 <img src="https://github.com/CymatiCorp/CyKITv2/blob/gitImages/git-Images/help4.png" width=70% height=70% ><br>
 'nocounter' flag enabled. The first 2 bytes (and delimiters) are not included<br>
 in the output data. May be useful for formatting data for other applications.
+
 
 Features
 --------
@@ -89,9 +92,11 @@ Special Thanks to CaptainSmiley for creating this Bluetooth port:
 ![Bluetooth Development](https://github.com/CymatiCorp/CyKITv2/blob/gitImages/Documentation/Bluetooth_Development-Epoc.pdf) <br>
 ![Bluetooth Application](https://github.com/CymatiCorp/CyKITv2/blob/gitImages/Bluetooth/emotivBT.zip) <br>
 
+
 OpenViBE Support
 ----------------
 ![OpenViBE Setup](https://github.com/CymatiCorp/CyKITv2/blob/gitImages/Documentation/OpenViBE.md)
+
 
 Beta
 ----
