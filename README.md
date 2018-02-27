@@ -76,9 +76,21 @@ Features
 
 Note: Does not currently stream to openvibe. <br>
 
-Documentation
--------------
+
+Bluetooth Support
+-----------------
+<img src="https://github.com/CymatiCorp/CyKITv2/blob/gitImages/git-Images/btle_win.png" width=80% height=80% ><br>
+
+Currently CyKIT does not have bluetooth support integrated into it. However we can direct you to the
+resources that incorporate bluetooth for Emotiv. Because Emotiv devices uses Bluetooth LE, which is not
+natively supported in Windows 7 or below. It can only be run on Windows 8 or 10, which supports BTLE. 
+Special Thanks to CaptainSmiley for creating this Bluetooth port:
+
 ![Bluetooth Development](https://github.com/CymatiCorp/CyKITv2/blob/gitImages/Documentation/Bluetooth_Development-Epoc.pdf) <br>
+![Bluetooth Application](https://github.com/CymatiCorp/CyKITv2/blob/gitImages/Bluetooth/emotivBT.zip) <br>
+
+OpenViBE Support
+----------------
 ![OpenViBE Setup](https://github.com/CymatiCorp/CyKITv2/blob/gitImages/Documentation/OpenViBE.md)
 
 Beta
